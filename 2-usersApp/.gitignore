@@ -97,7 +97,7 @@ db.sqlite3
 
 # serverapp/qnc/migrations/0*py
 
-myapp/migrations/*
-!myapp/migrations/__init__.py
+users/migrations/*
+!users/migrations/__init__.py
 
 media/
