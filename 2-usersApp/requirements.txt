@@ -1,0 +1,9 @@
+django==2.2
+# django-ckeditor==5.7.1
+# # psycopg2==2.7.4
+# djoser==2.0.3
+# pillow==6.2.0
+# djangorestframework==3.9.2
+# oauth2client
+# django-crispy-forms==1.8.1
+# # django-allauth==0.41.0
