@@ -1,0 +1,79 @@
+{% extends "dashboard/base.html" %}
+{% load humanize %}
+
+{% block breadcrumb_item %}
+<li>List Pembayaran Komisi</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+      <div class="panel-body">
+        <div class="col-md-6">
+          <a href="{% url 'pembayaran_komisi_create' %}" class="btn btn-primary">Tambah Pembayaran Komisi</a>
+        </div>
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search" value="{{searchvalue}}">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'pembayaran_komisi_list' %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <th>Created  On</th>
+              <th>ID Marketing Squad</th>
+              <th>Jumlah Bayar</th>
+              <th style="width: 15%;">Action</th>
+            </thead>
+            <tbody>
+              {% for list in pembayaran_komisi_list %}
+              <tr>
+                <td>{{list.created_on}}</td>
+                <td>{{list.marketing_squard.id_marketing_squard}}</td>
+                <td>Rp {{list.jumlah_bayar|intcomma}}</td>
+                <td>
+                  <a class='btn btn-success btn-sm' title='Detail' href="{% url 'pembayaran_komisi_detail' list.id %}">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  <a class='btn btn-primary btn-sm' title='Edit' href="{% url 'pembayaran_komisi_update' list.id %}">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  <a class="btn btn-danger btn-sm" title="Delete" href="{% url 'pembayaran_komisi_delete' list.id %}">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" align="center" style="color: red;">No data</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

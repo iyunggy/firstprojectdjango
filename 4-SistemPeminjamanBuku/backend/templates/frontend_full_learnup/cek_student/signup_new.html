@@ -1,0 +1,76 @@
+{% extends "frontend_full_learnup/base.html" %}
+
+{% block content %}
+<section class="page-title">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-12">
+        
+        <div class="breadcrumbs-wrap">
+          <h1 class="breadcrumb-title">Create An Account</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Register</li>
+            </ol>
+          </nav>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pt-0">
+  <div class="container">
+    
+    <div class="row">
+      <div class="col-lg-12 col-md-12">
+      
+        <div class="log_wrap">
+          <h4>Checkout Info</h4>
+          <div class="logi-form">
+            <form action="" method="post">
+              {% csrf_token %}
+              <div class="row">
+  
+                {% if form.errors %}
+                <div class="alert alert-danger">{{form.errors}}</div>
+                {% endif %}
+  
+                <div class="col-lg-12 col-md-12">
+                  <div class="form-group">
+                    {{form_register.as_p}}
+                  </div>
+                </div>
+  
+                {% if next is not '' %}
+                  <input type="hidden" name="next" id="next" value="{{next}}">
+                {% endif %}
+  
+              </div>
+              <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="return Validate()">Sign Up</button>
+            </form>
+          </div>
+        </div>
+        
+      </div>      
+    </div>
+    
+  </div>
+</section>
+{% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript">
+  function Validate() {
+    var password = document.getElementById("id_password1").value;
+    var confirmPassword = document.getElementById("id_password2").value;
+    if (password != confirmPassword) {
+      alert("Passwords do not match.");
+      return false;
+    }
+    return true;
+  }
+</script>
+{% endblock scripts%}

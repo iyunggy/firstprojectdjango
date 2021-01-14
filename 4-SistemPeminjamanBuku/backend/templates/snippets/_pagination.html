@@ -1,0 +1,92 @@
+<!-- <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+    </li>
+    {% endif %}
+
+    {% for page in paginator.page_range %}
+    {% if page is page_obj.number %}
+    <li class="page-item active" aria-current="page">
+        <span class="page-link" href="#">{{page}}<span class="sr-only">(current)</span></span>
+    </li>
+    {% else %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page }}">{{page}}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+    </li>
+    {% endif %}
+</ul> -->
+
+<!-- combining filtering and pagination -->
+{% load my_tags %} <!-- load from templatetags  -->
+
+{% if is_paginated %}
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <!-- previous page -->
+            <li class="page-item">
+                <a href="?{% param_replace page=page_obj.previous_page_number %}">Previous</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+        {% endif %}
+
+        <!-- Page range ke Show semua -->
+        <!-- Page {{ page_obj.number }} of {{ paginator.num_pages }} -->
+        <!-- currently page and page number -->
+        <!-- {% for page in paginator.page_range %}
+            {% if page is page_obj.number %}
+            <li class="page-item active" aria-current="page">
+                <span class="page-link" href="#">{{page}}<span class="sr-only">(current)</span></span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?{% param_replace page=page %}">{{page}}</a>
+            </li>
+            {% endif %}
+        {% endfor %} -->
+
+        {% for page in paginator.page_range %}
+            {% if page is page_obj.number %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link" href="#">{{page}}<span class="sr-only">(current)</span></span>
+                </li>
+            {% else %}
+                <!-- page display limit -->
+                {% if page > page_obj.number|add:'-5' and page < page_obj.number|add:'5' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% param_replace page=page %}">{{page}}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <!-- next page -->
+            <li class="page-item">
+                <a href="?{% param_replace page=page_obj.next_page_number %}">Next</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+            </li>
+        {% endif %}
+    </ul>
+{% endif %}

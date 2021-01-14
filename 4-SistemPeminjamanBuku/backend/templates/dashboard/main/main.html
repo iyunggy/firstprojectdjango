@@ -1,0 +1,78 @@
+{% extends "dashboard/base.html" %}
+
+{% comment %}
+  <!-- {% block content %}
+
+<div class="alert alert-info" role="alert">
+  INFORMASI TERKINI
+</div>
+<div class="row">
+  {% for info in infos %}
+  <div class="col-md-3">
+      <div class="user-profile-panel panel panel-white">
+          <div class="panel-heading">
+              <div class="panel-title">{{info.judul}}</div>
+          </div>
+          <div class="panel-body">
+              {% if info.image %}
+              <img src="{{info.image.url}}" class="user-profile-image img-circle"  style="object-fit: cover;" alt="">
+              {% endif%}
+              <hr>
+              <ul class="list-unstyled text-left">
+                  <p>{{info.deskripsi_singkat|slice:":100"}}</p>
+              </ul>
+              <hr>
+              <a class='btn btn-info btn-block' title='DETAIL' href="{% url 'pengumuman_dashboard_detail' info.id %}">
+                  DETAIL
+              </a>
+          </div>
+      </div>
+  </div>
+  {% endfor%}
+</div>
+
+{% endblock content %} -->
+{% endcomment %}
+
+{% block content %}
+    <div class="alert alert-info" role="alert">
+        INFORMASI TERKINI
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-white">
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            {% for info in infos %}
+                            <tr>
+                                <td style="width: 10%;">
+                                    {% if info.image %}
+                                    <a href="{% url 'pengumuman_dashboard_detail' info.id %}">
+                                        <img src="{{info.image.url}}" class="user-profile-image"  style="object-fit: cover;" alt="">
+                                    </a>
+                                    {% endif%}
+                                </td>
+                                <td>
+                                    <a href="{% url 'pengumuman_dashboard_detail' info.id %}" style="text-decoration: none;">
+                                        <h3>{{info.judul}}</h3>
+                                    </a>
+                                    <p>{{info.deskripsi_singkat|slice:":100"}}</p>
+                                    <p>Pengumuman | {{info.created_on}}</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        {% if is_paginated %}
+                        {% include 'snippets/_pagination.html' %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts%}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+{% endblock %}

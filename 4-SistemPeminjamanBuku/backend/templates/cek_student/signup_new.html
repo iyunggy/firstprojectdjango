@@ -1,0 +1,47 @@
+{% extends "frontend_udemy/base.html" %}
+{% block content %}
+  <div class="container">
+    <br>
+    <br>
+    <form action="" method="POST" style="border:1px solid #ccc">
+      {% csrf_token %}
+      <div class="container">
+        <br></br>
+        <h4 style="text-align: center;">Registration</h4>
+        <hr>
+        <!-- {% if msg %}
+        <p style="color: red;"><strong><em>{{msg}}</em></strong></p>
+        <br>
+        {% endif %} -->
+
+        {% if form.errors %}
+          <div class="alert alert-danger">{{form.errors}}</div>
+        {% endif %}
+
+        {{form_register.as_p}}
+        {% if next is not '' %}
+          <input type="hidden" name="next" id="next" value="{{next}}">
+        {% endif %}
+        <div class="clearfix">
+          <button type="submit" class="signupbtn" id="btnSubmit" onclick="return Validate()">Register</button>
+        </div>
+        <br><br>
+      </div>
+    </form>
+  </div>
+  <br>
+{% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript">
+  function Validate() {
+    var password = document.getElementById("id_password1").value;
+    var confirmPassword = document.getElementById("id_password2").value;
+    if (password != confirmPassword) {
+      alert("Passwords do not match.");
+      return false;
+    }
+    return true;
+  }
+</script>
+{% endblock scripts%}

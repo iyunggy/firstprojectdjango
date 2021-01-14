@@ -1,0 +1,94 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li><a href="{% url 'kelompok_ujian_list' %}">List Quiz</a></li>
+<li>List SubQuiz</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+      <!-- page untuk admin -->
+      <div class="panel-body">
+        <div class="col-md-6">
+          <a href="{% url 'ujian_create' slug %}" class="btn btn-primary btn-rounded"><i class="fa fa-plus"></i> Tambah SubQuiz</a>
+        </div>
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'ujian_list' slug %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+                <tr>
+                  <!-- <th>#</th> -->
+                  <th style="width: 8%;">Urutan</th>
+                  <th style="width: 11%;">Quiz</th>
+                  <th>SubQuiz</th>
+                  <th>Nama</th>
+                  <th>Action</th>
+                  <th>Soal SubQuiz</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for list in ujian_list %}
+              <tr>
+                <!-- <th scope="row">{{page_obj.start_index|add:forloop.counter0}}</th> -->
+                <td>{{list.urutan_ujian}}</td>
+                <td>{{list.kelompok_ujian.kode_kelompok}}</td>
+                <td>{{list.kode}}</td>
+                <td>{{list.nama}}</td>
+                <td>
+                  <a class='btn btn-success btn-sm btn-rounded' title='Detail' href="{% url 'ujian_detail' list.slug %}">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  <a class='btn btn-primary btn-sm btn-rounded' title='Edit' href="{% url 'ujian_update' list.slug %}">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  <a class='btn btn-danger btn-sm btn-rounded' title='Delete' href="{% url 'ujian_delete' list.slug %}">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </td>
+                <td>
+                  <a class='btn btn-primary btn-sm btn-rounded' title='Buat Soal' href="{% url 'soal_create' list.slug %}">
+                    Buat Soal</a>
+                  <a class='btn btn-info btn-sm btn-rounded' title='List Soal' href="{% url 'soal_list' list.slug %}">List Soal
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="6" align="center" style="color: red;">No data</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+        <a href="{% url 'kelompok_ujian_list' %}" class="btn btn-danger btn-rounded"><i class="fa fa-reply"></i> Back</a>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

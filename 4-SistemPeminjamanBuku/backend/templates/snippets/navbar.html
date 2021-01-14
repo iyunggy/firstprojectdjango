@@ -1,0 +1,48 @@
+{% load static %}
+<div class="navbar">
+        <div class="navbar-inner">
+            <div class="sidebar-pusher">
+                <a href="javascript:void(0);" class="waves-effect waves-button push-sidebar">
+                    <i class="icon-arrow-right"></i>
+                </a>
+            </div>
+            <div class="logo-box">
+                <!-- UBAH WIDTH CSS -->
+                <!-- <a href="{% url 'dashboard' %}" class="logo-text"><span>Prasetiya Mulya</span></a> -->
+                <a href="{% url 'homepage' %}" class="logo-text">
+                    <img src="{% static 'logo/educourse-white.png' %}" alt="" style="height: 50px; margin-top: -15px;" width="auto">
+                </a>
+            </div>
+            <div class="topmenu-outer">
+                <div class="top-menu">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                            <a href="javascript:void(0);" class="sidebar-toggle"><i class="icon-arrow-left"></i></a>
+                        </li>
+                        <!-- <li>
+                        </li> -->
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <!-- include order cart -->
+                        {% include "dashboard/order/order_cart.html" %}
+                        {% if user.is_authenticated %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="user-name">{{user.email}} - {{user.status}}<i class="fa fa-angle-down"></i></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-list" role="menu">
+                                <li role="presentation"><a href="{% url 'password_change' %}"><i class="icon-wrench m-r-xs"></i>Change Password</a></li>
+                                <li role="presentation"><a href="{% url 'logout_user' %}"><i class="icon-key m-r-xs"></i>Log Out</a></li>
+                                {% else %}
+                                    <li role="presentation"><a href="{% url 'login_user' %}"><i class="icon-key m-r-xs"></i>Log In</a></li>
+                                {% endif %}
+
+                            </ul>
+
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>

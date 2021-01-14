@@ -1,0 +1,74 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading clearfix">
+        <h3 class="panel-title">Grafik User Tahun Ini</h3>
+        <div class="panel-control">
+          <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="" class="panel-reload" data-original-title="Reload"><i class="icon-reload"></i></a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form action="{% url 'user_statistic' %}" method="GET">
+          <div class="col-md-3 form-group">
+            <select name="tahun_user" class="js-states form-control" required>
+              {% for list in distinct_user_year %}
+                <option value="{{list}}" {% if list == tahun %} selected {% endif %}>{{list}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3 form-group">
+            <button type="submit" class="btn btn-info btn-sm btn-rounded"><i class="fa fa-search"></i> Cari</button>
+          </div>
+        </form>
+      </div>
+      <div class="panel-body">
+        <div>
+          <canvas id="chart1" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts%}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script>
+
+  var xLabel = {{ xLabel | safe }}
+  var xAxis = {{ xAxis | safe }}
+  
+
+  var data1 = {
+    labels: xLabel,
+    datasets: [{
+      // label: ,
+      backgroundColor: 'rgb(0, 191, 255, 0.2)',
+      borderColor: 'rgb(0, 191, 255, 1)',
+      borderWidth: 1,
+      data: xAxis,
+    }]
+  };
+
+  var ctx1 = $("#chart1");
+  var myBarChart = new Chart(ctx1, {
+    type: 'bar',
+    data: data1,
+    options: {
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+</script>
+{% endblock %}

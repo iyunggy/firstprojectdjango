@@ -1,0 +1,391 @@
+{% extends "frontend_full_learnup/base.html" %}
+{% load humanize %}
+{% load mathfilters %}
+
+{% block meta %}
+<meta name="description" content="I-GEN: {{course.judul}}">
+<meta name="keywords" content="I-GEN: {{course.judul}}">
+<meta property="og:image" content="{{course.image.url}}">
+{% endblock meta %}
+
+{% block content %}
+<!-- ============================ Page Title Start================================== -->
+<div class="ed_detail_head">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-4 col-md-5">
+        
+        <div class="property_video">
+          <div class="thumb">
+            <img class=" img-fluid w100" src="{{course.image.url}}" alt="7.jpg">
+            <!-- <div class="overlay_icon">
+              <div class="bb-video-box">
+                <div class="bb-video-box-inner">
+                  <div class="bb-video-box-innerup">
+                    <a href="https://www.youtube.com/watch?v=A8EI6JaFbv4" data-toggle="modal" data-target="#popup-video" class="theme-cl"><i class="ti-control-play"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+        
+      </div>
+      
+      <div class="col-lg-8 col-md-7">
+        <div class="ed_detail_wrap">
+          <ul class="cources_facts_list">
+            {% if course.category_course == "Foreign Language" %}
+            <li class="facts-1">{{course.category_course}}</li>
+            {% elif course.category_course == "STEAM Learning"  %}
+            <li class="facts-2">{{course.category_course}}</li>
+            {% else %}
+            <li class="facts-5">{{course.category_course}}</li>
+            {% endif %}
+          </ul>
+          <div class="ed_header_caption">
+            <h2 class="ed_title">{{course.judul}}</h2>
+            
+            {% if course_subscription != 0  %}
+            <ul>
+              <!-- <li><i class="ti-calendar"></i>10 - 20 weeks</li>-->
+              <li><i class="ti-time"></i>Valid thru: {{course.tanggal_mulai}} - {{course.tanggal_akhir}}</li> 
+              <!-- <li><i class="ti-user"></i>{{course_subscription}} Student Enrolled</li> -->
+            </ul>
+            {% endif %}
+              
+          </div>
+          <div class="ed_header_short">
+            <p>{{course.deskripsi_singkat}}</p>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ============================ Page Title End ================================== -->
+
+<!-- ============================ Course Detail ================================== -->
+<section class="bg-light">
+  <div class="container">
+    <div class="row">
+    
+      <div class="col-lg-8 col-md-8">
+        
+        <!-- Overview -->
+        <div class="edu_wraper">
+          <h4 class="edu_title">Course Details</h4>
+          {{course.keterangan_detail|safe}}
+        </div>
+        
+      </div>
+      
+      <!-- Sidebar -->
+      <div class="col-lg-4 col-md-4">
+      
+        <div class="ed_view_box style_2">
+        
+          <div class="edu_wraper">
+            <h4 class="edu_title">Course Features</h4>
+            <ul class="edu_list right">
+              <!-- <li><i class="ti-user"></i>Student Enrolled:<strong>{{course_subscription}}</strong></li> -->
+              <!-- <li><i class="ti-files"></i>lectures:<strong>10</strong></li> -->
+              <li><i class="ti-game"></i>Quizzes:<strong>
+                {% if course.quizzes == True %}
+                  Yes
+                {% else %}
+                  -
+                {% endif %}
+              </strong></li>
+              <li><i class="ti-shine"></i>Assignment:<strong>
+                {% if course.assignments %}
+                  Yes
+                {% else %}
+                  -
+                {% endif %}
+              </strong></li>
+              <li><i class="ti-time"></i>Duration:<strong>
+                {% if course.durations %}
+                  {{course.durations}} hours
+                {% else %}
+                  -
+                {% endif %}
+              </strong></li>
+              <!-- <li><i class="ti-tag"></i>Skill Level:<strong>Beginner</strong></li>
+              <li><i class="ti-flag-alt"></i>Language:<strong>English</strong></li> -->
+            </ul>
+          </div>
+
+          <hr>
+
+          <div class="ed_view_price pl-4">
+            <span>Actual Price</span>
+            
+            {% if voucher == "Voucher tidak ada, berlaku harga sebenarnya" %}
+            <h2 class="theme-cl">Rp {{course.harga_course|intcomma}}</h2>
+            {% else %}
+            <s><h2 class="theme-cl">Rp {{course.harga_course|intcomma}}</h2></s>
+            <h2 class="theme-cl">Rp {{voucher.harga|intcomma}}</h2>
+            {% endif %}
+              
+          </div>
+          
+          
+          {% comment %}
+            <!-- {% if course.payment_method == "Midtrans" %}
+            <div class="ed_view_price pl-4">
+              <span>Payment Gateway Charge (Midtrans)</span>
+              <h2 class="theme-cl">
+                
+                {% if voucher == "Voucher tidak ada, berlaku harga sebenarnya" %}
+                  <!-- payment charge ga ada voucher -->
+                  {% if course.harga_course > 200000 %}
+                    Rp {{course.harga_course|mul:0.02|intcomma}}
+                  {% else %}
+                    Rp 4,000.0
+                  {% endif %}
+
+                {% else %}
+                  <!-- payment charge ada voucher -->
+                  {% if voucher.harga > 200000 %}
+                    <s>Rp {{course.harga_course|mul:0.02|intcomma}}</s> <br>
+                    Rp {{voucher.harga|mul:0.02|intcomma}}
+                  {% elif voucher.harga == 0 %}
+                    <s>Rp 4,000.0</s> <br>
+                    Rp 0
+                  {% else %}
+                    Rp 4,000.0
+                  {% endif %}
+
+                {% endif %}
+                  
+                  
+              </h2>
+            </div>
+            {% endif %} -->
+          {% endcomment %}
+
+          <!-- <div class="ed_view_features pl-4">
+            <span>Course Features</span>
+            <ul>
+              <li><i class="ti-angle-right"></i>Fully Programming</li>
+              <li><i class="ti-angle-right"></i>Help Code to Code</li>
+              <li><i class="ti-angle-right"></i>Free Trial 7 Days</li>
+              <li><i class="ti-angle-right"></i>Unlimited Videos</li>
+              <li><i class="ti-angle-right"></i>24x7 Support</li>
+            </ul>
+          </div> -->
+          {% if course.tanggal_mulai <= today and course.tanggal_akhir >= today %}
+            <div class="ed_view_link">
+              <!-- <a href="#" class="btn btn-theme enroll-btn">Enroll Now<i class="ti-angle-right"></i></a> -->
+              {% if langganan == True %}
+              <a href="{% url 'course_student_detail' course.id %}" class="btn btn-theme enroll-btn" style="background-color: green; border-color: green;">Access Now<i class="ti-angle-right"></i></a>
+              {% else %}
+                <!-- 1. kondisi course gratis -->
+                {% if course.harga_course == 0 %}
+                
+                  {% if id_marketing_squard != "" %}
+                  <a href="{% url 'subscription_done_marketing' pk=course.id id_marketing_squard=id_marketing_squard%}" class="btn btn-theme enroll-btn" style="background-color: #0066cc; border-color: #0066cc;">Get Free Access<i class="ti-angle-right"></i></a>
+                  {% else %}
+                  <a href="{% url 'subscription_done' course.id %}" class="btn btn-theme enroll-btn" style="background-color: #0066cc; border-color: #0066cc;">Get Free Access<i class="ti-angle-right"></i></a>
+                  {% endif %}
+                  
+                {% else %}
+                <!-- 2. kondisi course bayar -->
+                  <!-- 2.a. course bayar saja -->
+                  {% if course.bundling_book == False %}
+                    
+                    {% if kode_voucher != '' and id_marketing_squard != '' %}
+                    <a  class="btn btn-theme enroll-btn" href="{% url 'front_end_course_checkout_voucher_otomatis_marketing' pk=course.id kode_voucher=kode_voucher id_marketing_squard=id_marketing_squard %}">Checkout & Enroll Now<i class="ti-angle-right"></i></a>
+                    {% elif kode_voucher != '' and id_marketing_squard == '' %}
+                    <a  class="btn btn-theme enroll-btn" href="{% url 'front_end_course_checkout_voucher_otomatis' pk=course.id kode_voucher=kode_voucher %}">Checkout & Enroll Now<i class="ti-angle-right"></i></a>
+                    {% else %}
+                    <a  class="btn btn-theme enroll-btn" href="{% url 'front_end_course_checkout' course.id %}">Checkout & Enroll Now<i class="ti-angle-right"></i></a>
+                    {% endif %}
+                      
+                  <!-- 2.b. course bayar saja + Bundling buku -->
+                  {% else %}
+                    <a  class="btn btn-theme enroll-btn" href="{% url 'checkout_course_bundling' course.id %}">Order & Checkout Now<i class="ti-angle-right"></i></a>
+                  {% endif %}
+                <!-- <a href="#" class="btn btn-theme enroll-btn">Checkout & Enroll Now<i class="ti-angle-right"></i></a> -->
+                {% endif %}
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>	
+
+        {% if course.tanggal_mulai <= today and course.tanggal_akhir >= today %}
+        <!-- 1. kondisi kelas masih available -->
+          <!-- beri alert jika sudah disubscribe -->
+          {% if langganan == True %}
+          <div class="alert alert-success" role="alert">
+            You have subscribed. Please press access now.
+          </div>
+          {% else %}
+
+            <!-- 1. kondisi course gratis -->
+            {% if course.harga_course == 0 %}
+            <div class="alert alert-primary" role="alert">
+              You don't have subscribed. Please press get free access.
+            </div>
+            <!-- 2. kondisi course bayar -->
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+              You dont't have subscribed. Please press enroll now.
+            </div>
+            {% endif %}
+
+          </div>
+          {% endif %}
+        
+        {% else %}
+        <!-- 2. kondisi kelas sudah closed -->
+        <div class="alert alert-danger" role="alert">
+          Sorry, this class closed.
+        </div>
+        {% endif %}
+
+      </div>
+    
+    </div>
+  </div>
+</section>
+<!-- ============================ Course Detail ================================== -->
+{% endblock content %}
+
+{% block content1 %}
+<div style="padding-left: 50px; padding-right: 50px;">
+<br>
+<div class="row mt-3">
+  <div class="col-md-12">
+    <h4>Detail Course</h4>
+    <hr>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-md-12">
+    <div class="panel-body">
+      {% if course.image %}
+      <img src="{{course.image.url}}" class="card-img-top rounded mx-auto d-block" alt=""
+        style="text-align: center; height: 200px; width: auto;">
+      {% endif %}
+      <br><hr>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <tr>
+            <td style="width:15%">Judul Course</td>
+            <td>:</td>
+            <td>{{course.judul}}</td>
+          </tr>
+          <tr>
+            <td>Deskripsi Singkat</td>
+            <td>:</td>
+            <td>{{course.deskripsi_singkat}}</td>
+          </tr>
+          <tr>
+            <td>Dapat Diakses</td>
+            <td>:</td>
+            <td>{{course.tanggal_mulai}} - {{course.tanggal_akhir}}</td>
+          </tr>
+          <tr>
+            <td colspan="3"><u>Keterangan Detail</u>
+              <br><br>{{course.keterangan_detail|safe}}
+            </td>
+          </tr>
+        </table>
+      </div>
+      {% if course.tanggal_mulai <= today and course.tanggal_akhir >= today %}
+      <div class="alert alert-info" role="alert">
+        Anda bisa mengikuti kelas ini.
+      </div>
+      {% else %}
+      {% if course.tanggal_mulai  >= today %}
+      <div class="alert alert-danger" role="alert">
+        Kelas ini belum dimulai. Silahkan melakukan Enrollment supaya Anda bisa mengikuti kelas ini.
+      </div>
+      {% else %}
+      <div class="alert alert-warning" role="alert">
+        Kelas ini telah selesai. Silahkan mendaftar pada kelas lain untuk mengikuti perkuliahan yang akan dibuka.
+      </div>
+      {% endif %}
+      {% endif %}
+
+      <!-- beri alert jika sudah disubscribe -->
+      {% if langganan == True %}
+      <div class="alert alert-success" role="alert">
+        Anda sudah subscribe. Silakan tekan tombol Akses Sekarang.
+      </div>
+      {% endif %}
+    </div>
+    <div class="panel-body">
+      <a type="button" class="btn btn-danger" href="{% url 'frontend_course' %}"><i class="fa fa-reply"></i>
+        Back</a>
+      &nbsp;
+      {% if course.harga_course == 0 %}
+      <!-- cek course gratis udah di subscribe belum -->
+        {% if langganan == True %}
+        <button class="btn btn-secondary" disabled><span class="fa-icon-pencil"></span>
+          Daftar Sekarang</button>
+        <a type="button" class="btn btn-success" href="{% url 'course_student_detail' course.id %}"><span class="fa-icon-pencil"></span>
+          Akses Sekarang</a>
+        {% else %}
+        <a type="button" class="btn btn-success" href="{% url 'subscription_done' course.id %}"><span class="fa-icon-pencil"></span>
+          Daftar Sekarang</a>
+        {% endif %}
+      {% else %}
+      <!-- cek course bayar udah di beli belum -->
+        {% if langganan == True %}
+        <button class="btn btn-secondary" disabled><i class="fa fa-shopping-cart"></i>
+          Dapatkan Akses</button>
+          <a type="button" class="btn btn-success" href="{% url 'course_student_detail' course.id %}"><span class="fa-icon-pencil"></span>
+            Akses Sekarang</a>
+        {% else %}
+
+          <!-- memfilter course yang bundling dengan book atau ga -->
+          {% if course.bundling_book == False %}
+          <a type="button" class="btn btn-success" href="{% url 'front_end_course_checkout' course.id %}"><i class="fa fa-shopping-cart"></i>
+            Dapatkan Akses</a>
+          {% else %}
+            <a type="button" class="btn btn-success" href="{% url 'checkout_course_bundling' course.id %}"><i class="fa fa-shopping-basket"></i>
+              Pesan Sekarang</a>
+          {% endif %}
+          <!-- akhir baris -->
+
+        {% endif %}
+      {% endif %}
+
+      <!-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong">
+        <i class="fa fa-shopping-cart"></i> Beli
+      </button> -->
+
+      <!-- Modal -->
+      <!-- <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Pembelian Course</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              {% if user.is_authenticated %}
+              <p>Email: <strong>{{user.email}}</strong> telah terdaftar dalam sistem kami, klik lanjutkan jika Anda ingin membeli course ini.</p>
+              {% else %}
+              <p>Anda belum login. Jika anda ingin membeli course ini silahkan klik Sign Up </p>
+              {% endif %}
+            </div>
+            <div class="modal-footer">
+              <a href="{% url 'signup_new_checkout' course.id %}" class="btn btn-secondary">Sign Up</a>
+              <a href="{% url 'front_end_course_checkout' course.id %}" class="btn btn-primary">Lanjutkan</a>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>
+<br>
+</div>
+{% endblock content1 %}

@@ -1,0 +1,123 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading clearfix">
+        <h3 class="panel-title">Omset
+          {% if status_order == "Tidak pilih" and rentang_waktu == "Tidak pilih" %}
+          <em>bulanan</em> yang <em>sudah LUNAS</em> tahun {{tahun}}
+          {% else %}
+          <em>{{rentang_waktu}}</em> yang <em>{{status_order}}</em> tahun {{tahun}}
+          {% endif %}
+        </h3>
+        <div class="panel-control">
+          <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="" class="panel-reload" data-original-title="Reload"><i class="icon-reload"></i></a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form action="{% url 'omset_statistic' %}" method="GET">
+          <div class="col-md-3 form-group">
+            <select name="status_order" class="js-states form-control" required>
+              <!-- <option  value="" selected="selected">---SELECT STATUS ORDER---</option> -->
+              <option value="LUNAS" {% if status_order == "LUNAS" %} selected {% endif %}>LUNAS</option>
+              <option value="BELUM LUNAS" {% if status_order == "BELUM LUNAS" %} selected {% endif %}>BELUM LUNAS</option>
+            </select>
+          </div>
+          <div class="col-md-3 form-group">
+            <select name="rentang_waktu" class="js-states form-control" required>
+              <!-- <option  value="" selected="selected">---SELECT RENTANG WAKTU---</option> -->
+              <option value="Bulanan" {% if rentang_waktu == "Bulanan" %} selected {% endif %}>Bulanan</option>
+              <option value="Harian" {% if rentang_waktu == "Harian" %} selected {% endif %}>Harian</option>
+              <option value="Last Week" {% if rentang_waktu == "Last Week" %} selected {% endif %}>Last Week</option>
+            </select>
+          </div>
+          <div class="col-md-3 form-group">
+            <select name="tahun_order" class="js-states form-control" required>
+              <!-- <option  value="" selected="selected">---SELECT TAHUN (omset bulanan)----</option> -->
+              {% for list in distinct_order_year %}
+                <option value="{{list}}" {% if list == tahun %} selected {% endif %}>{{list}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3 form-group">
+            <button type="submit" class="btn btn-info btn-sm btn-rounded"><i class="fa fa-search"></i> Cari</button>
+          </div>
+        </form>
+      </div>
+      <div class="panel-body">
+        <div>
+          <div id="chart1" height="100"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts%}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+  var options = {
+    series: [{
+    name: 'Revenue',
+    type: 'area',
+    data: [100000000, 70000000, 30000000, 50000000, 35000000, 45000000, 40000000, 70000000, 80000000, 70000000, 50000000, 50000000]
+  }, {
+    name: 'Expenses',
+    type: 'area',
+    data: [30000000, 20000000, 10000000, 10000000, 30000000, 20000000, 10000000, 10000000, 30000000, 10000000, 10000000, 10000000]
+  }, {
+    name: 'Gross Profit',
+    type: 'line',
+    data: [70000000, 50000000, 20000000, 40000000, 5000000, 25000000, 30000000, 60000000, 50000000, 60000000, 40000000, 40000000]
+  }, {
+    name: 'Net / Profit Loss',
+    type: 'column',
+    data: [30000000, 20000000, 10000000, 10000000, 30000000, 20000000, 10000000, 10000000, 30000000, 10000000, 10000000, 10000000]
+  }],
+    chart: {
+    height: 350,
+    type: 'line',
+    stacked: false,
+  },
+  stroke: {
+    width: [0, 2, 5, 4],
+    curve: 'smooth'
+  },
+  plotOptions: {
+    bar: {
+      columnWidth: '50%'
+    }
+  },
+  
+  fill: {
+    opacity: [0.85, 0.25, 1, 1.2],
+    gradient: {
+      inverseColors: false,
+      shade: 'light',
+      type: "vertical",
+      opacityFrom: 0.85,
+      opacityTo: 0.55,
+      stops: [0, 100, 100, 100]
+    }
+  },
+  markers: {
+    size: 0
+  },
+  xaxis: {
+  categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des',]
+  },
+  yaxis: {
+    title: {
+      text: 'Rupiah',
+    },
+    min: 0
+  },
+  };
+
+  var chart = new ApexCharts(document.querySelector("#chart1"), options);
+  chart.render();
+</script>
+{% endblock %}

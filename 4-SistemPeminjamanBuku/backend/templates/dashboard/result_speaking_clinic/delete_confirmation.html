@@ -1,0 +1,77 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>  <a href="{% url 'result_speaking_clinic_list' %}">List Result Speaking Clinic</a></li>
+<li>Delete Result Speaking Clinic</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+      <!-- page untuk admin -->
+      <div class="panel-heading">
+        <h4 class="panel-title">Delete Confirmation</h4>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Created On</td>
+              <td>:</td>
+              <td>{{answerspeakingclinic.created_on}}</td>
+            </tr>
+            <tr>
+              <td>Course Code</td>
+              <td>:</td>
+              <td>{{answerspeakingclinic.question.course.course_code}}</td>
+            </tr>
+            <tr>
+              <td>Question</td>
+              <td>:</td>
+              <td>{{answerspeakingclinic.question.text_question|linebreaks}}</td>
+            </tr>
+            <tr>
+              <td>User</td>
+              <td>:</td>
+              <td>{{answerspeakingclinic.user}}</td>
+            </tr>
+            <tr>
+              <td>File audio</td>
+              <td>:</td>
+              <td>
+                {% if answerspeakingclinic.file_audio %}
+                  <audio controls  controlsList="nodownload">
+                    <source src="{{answerspeakingclinic.file_audio.url}}">
+                  Your browser does not support the audio element.
+                  </audio>
+                  {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Score</td>
+              <td>:</td>
+              <td>{{answerspeakingclinic.score}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary"> Ok</button>
+          <a type="button" class="btn btn-danger" href="{% url 'result_speaking_clinic_list' %}"><i class="fa fa-reply"></i>
+            Back</a>
+        </form>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin atau manager sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

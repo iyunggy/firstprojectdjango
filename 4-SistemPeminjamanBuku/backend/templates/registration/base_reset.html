@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>I-GEN Courses Portal</title>
+      {% include "snippets/favicon.html" %}
+      {% include "snippets/style.html" %}
+  <!-- Styles -->
+  <link href="{% static 'dashboard/plugins/pace-master/themes/blue/pace-theme-flash.css' %}" rel="stylesheet" />
+  <link href="{% static 'dashboard/plugins/uniform/css/default.css' %}" rel="stylesheet" />
+  <link href="{% static 'dashboard/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'dashboard/plugins/fontawesome/css/font-awesome.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'dashboard/plugins/line-icons/simple-line-icons.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'dashboard/plugins/offcanvasmenueffects/css/menu_cornerbox.css' %}" rel="stylesheet"
+    type="text/css" />
+  <link href="{% static 'dashboard/plugins/waves/waves.min.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'dashboard/plugins/switchery/switchery.min.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'dashboard/plugins/3d-bold-navigation/css/style.css' %}" rel="stylesheet" type="text/css" />
+
+  <!-- Theme Styles -->
+  <link href="{% static 'dashboard/css/meteor.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'dashboard/css/layers/dark-layer.css' %}" class="theme-color" rel="stylesheet"
+    type="text/css" />
+  <!-- <link href="{% static 'dashboard/css/custom.css' %}" rel="stylesheet" type="text/css" /> -->
+
+  <script src="{% static 'dashboard/plugins/3d-bold-navigation/js/modernizr.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/offcanvasmenueffects/js/snap.svg-min.js' %}"></script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- favicon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="{% static 'favicon/apple-icon-57x57.png' %}">
+  <link rel="apple-touch-icon" sizes="60x60" href="{% static 'favicon/apple-icon-60x60.png' %}">
+  <link rel="apple-touch-icon" sizes="72x72" href="{% static 'favicon/apple-icon-72x72.png' %}">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'favicon/apple-icon-76x76.png' %}">
+  <link rel="apple-touch-icon" sizes="114x114" href="{% static 'favicon/apple-icon-114x114.png' %}">
+  <link rel="apple-touch-icon" sizes="120x120" href="{% static 'favicon/apple-icon-120x120.png' %}">
+  <link rel="apple-touch-icon" sizes="144x144" href="{% static 'favicon/apple-icon-144x144.png' %}">
+  <link rel="apple-touch-icon" sizes="152x152" href="{% static 'favicon/apple-icon-152x152.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-icon-180x180.png' %}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'favicon/android-icon-192x192.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="96x96" href="{% static 'favicon/favicon-96x96.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static 'favicon/manifest.json' %}">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="{% static 'favicon/ms-icon-144x144.png' %}">
+  <meta name="theme-color" content="#ffffff">
+
+
+</head>
+
+<body class="page-forgot">
+  <main class="page-content">
+    <div class="page-inner">
+      <div id="main-wrapper">
+        <div class="row">
+          {% block content_reset %}
+
+          {% endblock content_reset %}
+        </div><!-- Row -->
+      </div><!-- Main Wrapper -->
+    </div><!-- Page Inner -->
+  </main><!-- Page Content -->
+
+
+  <!-- Javascripts -->
+  <script src="{% static 'dashboard/plugins/jquery/jquery-3.1.0.min.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/pace-master/pace.min.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/jquery-blockui/jquery.blockui.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/switchery/switchery.min.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/uniform/js/jquery.uniform.standalone.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/offcanvasmenueffects/js/classie.js' %}"></script>
+  <script src="{% static 'dashboard/plugins/waves/waves.min.js' %}"></script>
+  <script src="{% static 'dashboard/js/meteor.min.js' %}"></script>
+</body>
+
+<!-- Javascripts -->
+<script src="{% static 'dashboard/plugins/jquery/jquery-3.1.0.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/pace-master/pace.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/jquery-blockui/jquery.blockui.js' %}"></script>
+<script src="{% static 'dashboard/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/switchery/switchery.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/uniform/js/jquery.uniform.standalone.js' %}"></script>
+<script src="{% static 'dashboard/plugins/offcanvasmenueffects/js/classie.js' %}"></script>
+<script src="{% static 'dashboard/plugins/waves/waves.min.js' %}"></script>
+<script src="{% static 'dashboard/js/meteor.min.js' %}"></script>
+</body>
+
+</html>

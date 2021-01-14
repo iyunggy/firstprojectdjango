@@ -1,0 +1,382 @@
+{% extends "frontend_full_learnup/base.html" %}
+{% load humanize %}
+
+{% block content %}
+<!-- ============================ Add To cart ================================== -->
+{% if cek_kota == "rajaongkir error" %}
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <h1>Server Pengiriman sedang error</h1>
+    </div>
+  </div>
+{% else %}
+  {% if user.is_authenticated %}
+    <div class="container">
+      <div class="row" style="margin-top: 30px; margin-bottom: 20px;">
+        <div class="col-md-8 ml-auto mr-auto">
+          <div class="alert alert-warning ">
+            <ul style="list-style-type:disc">
+              <li>Pastikan masukkan data pengiriman dengan benar sebelum memasukkan voucher (jika ada). Jika voucher sudah diterapkan Anda tidak dapat mengubah kota pengiriman Anda</li>
+              <li>Pengiriman pakai JNE dan jenis pengiriman REG, kecuali pengiriman untuk wilayah tangerang memakai CTCYES</li>
+              <li>Estimasi waktu JNE CTCYES 1 hari sedangkan estimasi waktu JNE REG 2-3 hari (didalam / dekat dengan pulau jawa) sementara jauh dari pulau jawa estimasi waktu 9-10 hari</li>
+            </ul> 
+          </div>
+        </div>
+      </div>
+    </div>
+    <section class="pt-0">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-12">
+          
+            <div class="cart_totals checkout light_form mb-4">
+              <h4>Checkout Form</h4>
+              <form action="{% url 'checkout_course_bundling' pk %}" method="post">
+                {% csrf_token %}
+                <div class="row">
+                
+                  <div class="col-lg-12 col-md-12">
+                    <div class="form-group">
+                      <label for="email">Your Email</label>
+                      <input type="email" class="form-control" name=email placeholder="Your Email" style="text-transform: lowercase;" required>
+                    </div>
+                  </div>
+                  
+                  <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                      <label>Your Full Name</label>
+                      <input type="text" class="form-control" name="fullname" placeholder="Your Full Name" required>
+                    </div>
+                  </div>
+                  
+                  <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                      <label>Your Phone Number / WhatsApp</label>
+                      <input type="number" class="form-control" name="no_hp" placeholder="Your Phone Number / WhatsApp" required>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12 col-md-12">
+                    <div class="form-group">
+                      <label>Quantity Of Books Ordered</label>
+                      <select id="quantity" class="form-control" name="jumlah_pesanan">
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12 col-md-12">
+                    <div class="form-group">
+                      <label>Address</label>
+                      <textarea class="form-control" name="alamat" placeholder="Your Address" required rows="3"></textarea>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                      <label>Kelurahan</label>
+                      <input type="text" class="form-control" name="kelurahan" placeholder="Kelurahan" id="kelurahan" required>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-md-6">
+                    <div class="form-group">
+                      <label>Kecamatan</label>
+                      <input type="text" class="form-control" name="kecamatan" placeholder="Kecamatan" id="kecamatan" required>
+                    </div>
+                  </div>
+
+                  <!-- kota asal pengiriman -->
+                <select hidden class="form-control" id="kota_asal" name="asal" disabled>
+                  {% for cek in cek_kota %}
+                  {% if cek.city_name == "Tangerang Selatan" %}
+                  <option value="{{cek.city_id}}" selected >{{cek.city_name}}, {{cek.type}}</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+
+                <div class="col-lg-6 col-md-6">
+                  <div class="form-group">
+                    <label for="kota">City</label>
+                    <select class="form-control" id="kota_tujuan" name="kota" required onchange="CekOngkir()" >
+                      <option  value="" selected="selected">---SELECT---</option>
+                      {% for cek in cek_kota %}
+                      <option value="{{cek.city_id}}">{{cek.city_name}}, {{cek.type}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+                  <div class="form-group">
+                    <label>Postal code</label>
+                    <input type="number" class="form-control" name="kode_pos" placeholder="Postal Code" id="kode_pos" required>
+                  </div>
+                </div>
+
+                <input type="hidden" class="form-control" name="kode_course"  value="{{courses.course_code}}" readonly>
+                <input type="hidden" class="form-control" name="harga_course"  value="{{courses.harga_course}}" id="harga_course" readonly>
+                <input type="hidden" class="form-control"  name="total_harga_course" id="total_harga_course" value="{{courses.harga_course}}" />
+                <input type="hidden" class="form-control"  name="referal_voucher" id="referal_voucher" />
+                <input type="hidden" class="form-control"  name="potongan_harga_persentase" id="potongan_harga_persentase" value="0" />
+                <input type="hidden" class="form-control"  name="berat_buku" id="book_weight" value="{{courses.berat_buku}}"/>
+                <input type="hidden" class="form-control"  name="ongkir" id="postal_fee" value="0" />
+                <input type="hidden" class="form-control"  name="kurir" id="courier" value="JNE"/>
+                <input type="hidden" class="form-control" name="jenis_kirim" id="jenis_kirim" value="REG" />
+                <input type="hidden" class="form-control" name="kota_tujuan" id="kota_tujuan_kirim" />
+                <input type="hidden" class="form-control" name="quantity_barang" id="quantity_barang" value="1"/>
+
+                </div>
+                <button class="btn btn-block bg--instagram" type="submit" id="checkout_btn">Continue to checkout</button>
+              </form>
+            </div>
+            
+          </div>
+          
+          <div class="col-lg-4 col-md-12">
+
+            <!-- Total Cart -->
+            <div class="cart_totals checkout">
+              <h4>Order Summary</h4>
+              <div class="cart-wrap">
+                <ul class="cart_list">
+                  <li>Course code <strong>{{courses.course_code}}</strong></li>
+                  <li>Course price <strong>Rp. {{courses.harga_course}}</strong></li>
+                  <li>Quantity
+                    <strong id="jumlahbarang_old">1</strong><br>
+                    <strong id="jumlahbarang_new"></strong>
+                  </li>
+                  <li>Book weight (gram)
+                    <strong id="beratbuku_old">{{courses.berat_buku}}</strong><br>
+                    <strong id="beratbuku_new"></strong>
+                  </li>
+                  <li>Postal fee
+                    <strong id="ongkir_old">Rp. 0</strong><br>
+                    <strong id="ongkir_new"></strong>
+                  </li>
+                </ul>
+                <div class="flex_cart" style="margin-bottom: 5px;">
+                  <div class="flex_cart_1">
+                    Amount pay
+                  </div>
+                  <div class="flex_cart_2">
+                    <strong id="totalhargacourse_old">Rp. {{courses.harga_course}}</strong><br>
+                    <strong id="totalhargacourse_new"></strong>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            
+            <hr>
+
+            <p id="vouchertext" style="color:red"><i>Masukan voucher di sini untuk mendapatkan harga spesial</i></p>
+            <div class="input-group">
+              <input type="text" name="input_voucher" class="form-control" id="input_voucher" placeholder="Kode Voucher">
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-secondary" onclick="RedeemHandler()" id="redeem">Redeem</button>
+              </div>
+            </div>
+
+          </div>
+          
+        </div>
+        
+      </div>
+    </section>
+  {% else %}
+    <div class="container">
+      <div class="alert alert-danger text-center" style="margin-bottom: 200px;">
+        <strong>You have to <a href="{% url 'login_user' %}?next=/course/checkout/{{courses.id}}">LOGIN</a> or <a href="{% url 'signup_new' %}?next=/course/checkout/{{courses.id}}">SIGN-UP</a> first.</strong>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
+<!-- ============================ Add To cart End ================================== -->
+{% endblock content %}
+
+{% block scripts %}
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+<script>
+  cek_api = {{cek_kota|safe}}
+  // console.log('cek ongkir', cek_api)
+  if(cek_api != "rajaongkir error") {
+    // 1. select option otomatis di looping
+    var start = 1;
+    var end = 100;
+    var options = "";
+    for(var quantity = start ; quantity <=end; quantity++){
+      options += "<option value="+quantity+">"+ quantity +"</option>";
+    }
+    document.getElementById("quantity").innerHTML = options;
+
+    // 2. redeem voucher potongan harga
+    function RedeemHandler(){
+      let kode_voucher = $('#input_voucher').val()
+      console.log(kode_voucher)
+      if (kode_voucher != ''){
+        fetch("https://educourse.i-gen.co.id/api/voucherpotonganharga/"+kode_voucher)
+        // fetch("http://127.0.0.1:8000/api/voucherpotonganharga/"+kode_voucher)
+          .then(response => response.json())
+          .then(data => {
+            // console.log(data)
+            if(data.length == 0){
+              alert('Tidak ada voucher code')
+              var element2 = document.getElementById("vouchertext");
+              element2.innerHTML = "Masukan voucher di sini untuk mendapatkan harga spesial"
+            }else{
+              // console.log('xxx',data[data.length-1].potongan_harga)
+              var course_code = "{{courses.id}}"
+              if (data[0].is_valid == true && course_code == data[0].course){
+                var element2 = document.getElementById("vouchertext");
+                element2.innerHTML = "Selamat! Voucher berhasil diterapkan"
+                // *** baris ganti total_harga
+                $("#totalhargacourse_new").show()
+                $("#totalhargacourse_old").css({"text-decoration": "line-through", "color": "red"});
+                total_harga = $("#total_harga_course").val()
+                pengurangan_harga = (total_harga * data[data.length-1].potongan_harga) / 100
+                amount = total_harga - pengurangan_harga
+                console.log('x', total_harga)
+                var element = document.getElementById("totalhargacourse_new");
+                element.innerHTML = "Rp. "+ amount.toLocaleString();
+                var element2 = document.getElementById("vouchertext");
+                element2.innerHTML = "Selamat! Voucher berhasil diterapkan"
+                document.getElementById("total_harga_course").value = amount;
+                // **** akhir baris ganti total harga
+                // masukkan referal_voucher dengan kode_voucher
+                document.getElementById("referal_voucher").value = kode_voucher;
+                // jika referal voucher sudah benar make input_voucher di disabled
+                document.getElementById("input_voucher").disabled = true;
+                // masukan discount ke input potongan_harga_persentase
+                document.getElementById("potongan_harga_persentase").value = data[data.length-1].potongan_harga;
+                // Setelah masukin referal voucher akan disabled inputan ini
+                // document.getElementById("kota_tujuan").css('pointer-events','none')  
+                $('#quantity').css('pointer-events','none');
+                $('#kota_tujuan').css('pointer-events','none');
+                $('#redeem').css('pointer-events','none');
+                document.getElementById("quantity").readOnly  = true
+                document.getElementById("kelurahan").readOnly  = true
+                document.getElementById("kecamatan").readOnly  = true
+                document.getElementById("kode_pos").readOnly  = true
+                console.log(document.getElementById("quantity").value)
+              }else{
+                alert("Kode ini tidak berlaku untuk course yang dipilih")
+                document.getElementById("input_voucher").value = '';
+              }
+            }
+          });
+      }else{
+          alert('Tuliskan kode voucher terlebih dahulu')
+          $("#totalhargacourse_old").css({"text-decoration": "none", 'color': 'black' });
+          $("#totalhargacourse_new").hide()
+          var element2 = document.getElementById("vouchertext");
+          element2.innerHTML = "Masukan voucher di sini untuk mendapatkan harga spesial"
+      }
+
+    }
+
+    // 3a. print quantity (kondisi awal / quantity ga di rubah)
+    $(document).ready(function() {
+      a = document.getElementById("harga_course").value
+      b = document.getElementById("quantity").value
+      c = document.getElementById("potongan_harga_persentase").value
+      total_harga = a * b
+      discount = (total_harga * c) / 100
+      amount = total_harga - discount
+      document.getElementById("total_harga_course").value = amount; //benar
+      if($('#kota_tujuan').val() != ''){
+        document.getElementById("checkout_btn").disabled = false;
+      }else{
+        document.getElementById("checkout_btn").disabled = true;
+      }
+
+      // 3b. jika ganti quantity
+      $('#quantity').change(function() {
+        berat_buku_awal = '{{courses.berat_buku}}'
+        quantity = $('#quantity').val()
+        total_berat_buku = berat_buku_awal * quantity
+        ongkir = document.getElementById("postal_fee").value
+        a = document.getElementById("harga_course").value
+        b = document.getElementById("quantity").value
+        c = document.getElementById("potongan_harga_persentase").value
+        total_harga = a * b
+        discount = (total_harga * c) / 100
+        amount = total_harga - discount
+        document.getElementById("jumlahbarang_old").innerHTML = b; //benar
+        // document.getElementById("summarybarang_old").innerHTML = b; //benar
+        document.getElementById("book_weight").value = total_berat_buku; //benar
+        document.getElementById("beratbuku_old").innerHTML = total_berat_buku.toLocaleString(); //benar
+        document.getElementById("quantity_barang").value = quantity
+        if ($('#referal_voucher').val() != ''){
+          document.getElementById("totalhargacourse_old").innerHTML = "Rp. " + (parseInt(total_harga) + parseInt(ongkir));
+          document.getElementById("totalhargacourse_new").innerHTML = "Rp. " + parseInt(amount);
+        } else {
+          document.getElementById("totalhargacourse_old").innerHTML = "Rp. " + (parseInt(total_harga) + parseInt(ongkir)); //benar
+          document.getElementById("total_harga_course").value = parseInt(total_harga) + parseInt(ongkir) //benar
+        }
+      });
+    });
+    
+    // 4a. cek ongkir (inisiasi kota asal di Tangerang Selatan)
+    id_kota_asal = $('#kota_asal').val()
+    // console.log('id kota_asal', id_kota_asal)
+    // 4b. jika pilih kota tujuan akan jalankan fungsi ini
+    function CekOngkir(){
+      let id_kota_tujuan = $('#kota_tujuan').val()
+      let berat_buku = $('#book_weight').val()
+      let quantity = $('#quantity').val()
+      let harga_course = $('#harga_course').val()
+      total_harga = quantity * harga_course
+      // console.log(quantity, harga_course)
+      // console.log(total_harga)
+        fetch("https://educourse.i-gen.co.id/api/cekongkir/"+ id_kota_asal +"/"+ id_kota_tujuan+"/"+ berat_buku+"/jne")
+        // fetch("http://127.0.0.1:8000/api/cekongkir/"+ id_kota_asal +"/"+ id_kota_tujuan+"/"+ berat_buku+"/jne")
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+            // 1. mencari object costs
+            costs = data.res.results[0].costs
+            if (costs[0]){
+              // console.log("ada harga ongkir")
+              // console.log('c', data.res.results[0].costs)
+              // 2. didapat costs untuk ongkir JNE regular 
+              ongkir = costs[1].cost[0].value
+              // console.log(costs[1].cost[0].value)
+              // 3. total bayar
+              total_bayar = parseInt(ongkir) + (parseInt(total_harga))
+              console.log('bayar', ongkir, total_harga)
+              document.getElementById("postal_fee").value = costs[1].cost[0].value //benar
+              document.getElementById("total_harga_course").value = total_bayar //benar
+              document.getElementById("checkout_btn").disabled = false //benar
+              document.getElementById("ongkir_old").innerHTML = "Rp. " + ongkir.toLocaleString(); //benar
+              document.getElementById("totalhargacourse_old").innerHTML = "Rp. " + total_bayar.toLocaleString(); //benar
+              document.getElementById("jenis_kirim").value = costs[1].service
+              document.getElementById("kota_tujuan_kirim").value = data.res.destination_details.city_name +", "+ data.res.destination_details.type +", "+ data.res.destination_details.province
+            }else{
+              // console.log("ga ada harga ongkir")
+              alert("Kota tujuan tidak support pengiriman, silahkan pilih kota lagi")
+              total_bayar = parseInt(total_harga)
+              console.log('bayar', total_bayar)
+              document.getElementById("total_harga_course").value = total_bayar //benar
+              document.getElementById("checkout_btn").disabled = true //benar
+              document.getElementById("ongkir_old").innerHTML = "Rp. 0"; //benar
+              document.getElementById("postal_fee").value = 0; //benar
+              document.getElementById("totalhargacourse_old").innerHTML = "Rp. " + total_bayar.toLocaleString(); //benar
+            }
+            
+            // untuk pilih jenis_pengiriman
+            // var options = "";
+            // costs.map((val, idx) => {
+            //   options += "<option value="+val.service+">"+ val.service +"</option>"
+            // })
+            // document.getElementById("jenis_kirim").innerHTML = options;
+          });
+
+    }
+
+  // akhir baris if cekongkir ada
+  }else{
+    console.log("abis")
+  }
+
+</script>
+{% endblock scripts %}

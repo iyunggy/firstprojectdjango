@@ -1,0 +1,625 @@
+{% extends 'frontend_full_learnup/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<!-- ============================ Hero Banner  Start================================== -->
+<div class="image-cover hero_banner shadow rlt bg-light">
+  <div class="container">
+    <!-- Type -->
+    <div class="row align-items-center">
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="banner-search-2 transparent">
+          <h1 class="hero_text big-header-capt cl_2 mb-2 f_2">Your Global Education <br> accelerator</h1>
+          <p>Study any topic, anytime. Choose from thousands of expert-led global courses now.</p>
+          <div class="mt-4">
+            <a href="https://api.whatsapp.com/send?phone=6282221963017" class="btn btn-modern dark">Enroll Now<span><i class="ti-arrow-right"></i></span></a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="flixio">
+            <img class="img-fluid" src="{% static 'logo/index-5.png' %}" alt="">
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<!-- ============================ Hero Banner End ================================== -->
+
+<!-- ============================ Featured Courses Start ================================== -->
+<section>
+  <div class="container">
+  
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-6 col-sm-12">
+        <div class="sec-heading center">
+          <p>Foreign Languages</p>
+          <h2><span class="theme-cl">Korean</span> Courses</h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <!-- Cource Grid 1 -->
+      {% for foreign_language in course_foreign_language|slice:":6" %}
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="education_block_grid style_2">
+          
+          <div class="education_block_thumb n-shadow">
+            <a href="{% url 'front_end_course_detail' foreign_language.id %}">
+              {% if foreign_language.image %}
+              <img src="{{foreign_language.image.url}}" class="img-fluid" alt="">
+              {% endif %}
+            </a>
+          </div>
+          
+          <div class="education_block_body">
+            <h4 class="bl-title"><a href="{% url 'front_end_course_detail' foreign_language.id %}">{{foreign_language.judul}}</a></h4>
+          </div>
+          
+          <!-- <div class="cources_facts">
+            <ul class="cources_facts_list">
+              <li class="facts-1">Expert</li>
+              <li class="facts-2">Professional</li>
+              <li class="facts-5">Design</li>
+            </ul>
+          </div> -->
+          
+          <div class="cources_info">
+            <!-- <div class="cources_info_first">
+              <ul>
+                <li><em>Start</em>: <strong>{{foreign_language.tanggal_mulai}}</strong></li>
+                <li class="theme-cl"><em>End</em>: {{foreign_language.tanggal_akhir}}</li>
+              </ul>
+            </div> -->
+            <div class="cources_info_last">
+              <h3>Rp{{foreign_language.harga_course|intcomma}}</h3>
+            </div>
+          </div>
+          
+          <div class="education_block_footer">
+            <!-- <div class="education_block_author">
+              <div class="path-img"><a href="instructor-detail.html"><img src="https://via.placeholder.com/500x500" class="img-fluid" alt=""></a></div>
+              <h5><a href="instructor-detail.html">Shaurya Preet</a></h5>
+            </div> -->
+            <span class="education_block_time"><i class="ti-calendar mr-1"></i>Valid thru: {{foreign_language.tanggal_mulai}} - {{foreign_language.tanggal_akhir}}</span>
+          </div>
+          
+        </div>	
+      </div>
+      {% endfor %}
+    </div>
+    
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-6 col-sm-12">
+        <div class="text-center">
+          <a href="{% url 'frontend_course' %}" class="btn btn-theme btn-browse-btn">Browse More Courses</a>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+<div class="container">
+  <hr>
+</div>
+
+<section>
+  <div class="container">
+  
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-6 col-sm-12">
+        <div class="sec-heading center">
+          <p>STEAM Learning</p>
+          <h2>Coding <span class="theme-cl">Courses</span></h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <!-- Cource Grid 1 -->
+      {% for coding in course_steam|slice:":3" %}
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="education_block_grid style_2">
+          
+          <div class="education_block_thumb n-shadow">
+            <a href="{% url 'front_end_course_detail' coding.id %}">
+            {% if coding.image %}
+            <img src="{{coding.image.url}}" class="img-fluid" alt="">
+            {% endif %}
+            </a>
+          </div>
+          
+          <div class="education_block_body">
+            <h4 class="bl-title"><a href="{% url 'front_end_course_detail' coding.id %}">{{coding.judul}}</a></h4>
+          </div>
+          
+          <div class="cources_info">
+            <div class="cources_info_last">
+              <h3>Rp{{coding.harga_course|intcomma}}</h3>
+            </div>
+          </div>
+          
+          <div class="education_block_footer">
+            <span class="education_block_time"><i class="ti-calendar mr-1"></i>Valid thru: {{coding.tanggal_mulai}} - {{coding.tanggal_akhir}}</span>
+          </div>
+          
+        </div>	
+      </div>
+      {% endfor %}
+    </div>
+    
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-6 col-sm-12">
+        <div class="text-center">
+          <a href="{% url 'frontend_course' %}" class="btn btn-theme btn-browse-btn">Browse More Courses</a>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+<div class="container">
+  <hr>
+</div>
+
+<section>
+  <div class="container">
+  
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-6 col-sm-12">
+        <div class="sec-heading center">
+          <p>Free Course</p>
+          <h2>Recent <span class="theme-cl">Free Courses</span></h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <!-- Cource Grid 1 -->
+      {% for free in free_course|slice:":3" %}
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="education_block_grid style_2">
+          
+          <div class="education_block_thumb n-shadow">
+            <a href="{% url 'front_end_course_detail' free.id %}">
+              {% if free.image %}
+              <img src="{{free.image.url}}" class="img-fluid" alt="">
+              {% endif %}
+            </a>
+          </div>
+          
+          <div class="education_block_body">
+            <h4 class="bl-title"><a href="{% url 'front_end_course_detail' free.id %}">{{free.judul}}</a></h4>
+          </div>
+          
+          <div class="cources_info">
+            <div class="cources_info_last">
+              <h3>Rp{{free.harga_course|intcomma}}</h3>
+            </div>
+          </div>
+          
+          <div class="education_block_footer">
+            <span class="education_block_time"><i class="ti-calendar mr-1"></i>Valid thru: {{free.tanggal_mulai}} - {{free.tanggal_akhir}}</span>
+          </div>
+          
+        </div>	
+      </div>
+      {% endfor %}
+    </div>
+    
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-6 col-sm-12">
+        <div class="text-center">
+          <a href="{% url 'frontend_course' %}" class="btn btn-theme btn-browse-btn">Browse More Courses</a>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</section>
+<!-- ============================ Featured Courses End ================================== -->
+
+<!-- ============================ Featured Category Start ================================== -->
+<section class="bg-light">
+  <div class="container">
+    
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-6 col-sm-12">
+        <div class="sec-heading center">
+          <p>Popular Category</p>
+          <h2><span class="theme-cl">Popular</span> Category For Learn</h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 p-0">
+
+        <div class="arrow_slide three_slide-dots arrow_middle">
+          
+          {% for popular in course_popular|slice:":8" %}
+            <!-- Single Slide -->
+          <div class="singles_items">
+            <div class="edu_cat">
+              <div class="pic">
+                <a class="pic-main" href="#" style="background-image:url(media/{{popular.course__image}});"></a>
+              </div>
+              <div class="edu_data">
+                <h4 class="title"><a href="#">{{popular.course__judul}}</a></h4>
+                <ul class="cources_facts_list mt-2 mb-2">
+                {% if popular.course__category_course == "Foreign Language"  %}
+                <li class="facts-1">{{popular.course__category_course}}</li>
+                {% else %}
+                <li class="facts-2">{{popular.course__category_course}}</li>
+                {% endif %}
+                </ul>
+                <ul class="meta">
+                  <li class="video"><i class="ti-calendar mr-1"></i>{{popular.course__tanggal_mulai}} - {{popular.course__tanggal_akhir}}</li>
+                  <!-- <li class="lessions"><i class="ti-credit-card mr-1"></i>Rp{{popular.course__harga_course|intcomma}}</li> -->
+                </ul>
+                <ul class="meta">
+                  <!-- <li class="video"><i class="ti-calendar mr-1"></i>{{popular.course__tanggal_mulai}} - {{popular.course__tanggal_akhir}}</li> -->
+                  <li class="lessions"><i class="ti-credit-card mr-1"></i>Rp{{popular.course__harga_course|intcomma}}</li>
+                </ul>
+              </div>
+            </div>	
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
+
+    </div>
+    
+  </div>
+</section>
+<!-- ============================ Featured Category End ================================== -->
+
+<!-- ========================== About Facts List Section =============================== -->
+<section>
+  <div class="container">
+    
+    <div class="row align-items-center">
+    
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="list_facts_wrap">
+          <div class="sec-heading mb-3">
+            <h2>Know about <span class="theme-cl">e-Learn</span> With Educourse</h2>
+          </div>
+          <div class="list_facts">
+            <div class="list_facts_icons"><i class="ti-desktop"></i></div>
+            <div class="list_facts_caption">
+              <h4>Easy & unique methods.</h4>
+              <p>Using the world's best curriculum STEAM based methods</p>
+            </div>
+          </div>
+          <div class="list_facts">
+            <div class="list_facts_icons"><i class="ti-heart"></i></div>
+            <div class="list_facts_caption">
+              <h4>Genuine & quality of learning.</h4>
+              <p>Using blended learning to breakthrough the accelerate of quality learning</p>
+            </div>
+          </div>
+          <div class="list_facts">
+            <div class="list_facts_icons"><i class="ti-harddrives"></i></div>
+            <div class="list_facts_caption">
+              <h4>affordable price.</h4>
+              <p>Using price transparancy based on consumer needs</p>
+            </div>
+          </div>
+          
+        </div>
+        <a href="https://api.whatsapp.com/send?phone=6282221963017" class="btn btn-modern">Contact Us<span><i class="ti-arrow-right"></i></span></a>
+      </div>
+      
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="list_facts_wrap_img">
+        
+          <!-- <img src="https://via.placeholder.com/550x490" class="img-fluid" alt="" /> -->
+          <iframe class="embed-video" src="https://www.youtube.com/embed/Po4UphIq-Kw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+    </div>
+    
+  </div>
+</section>
+<!-- ========================== About Facts List Section =============================== -->
+
+<!-- ========================== Featured Courses Section =============================== -->
+<section class="gray">
+  <div class="container">
+  
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-6 col-sm-12">
+        <div class="sec-heading center">
+          <p>Hot &amp; Trending</p>
+          <h2><span class="theme-cl">Recent</span> Courses</h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 p-0">
+
+        <div class="arrow_slide three_slide-dots arrow_middle">
+
+          {% for available in available_course|slice:":8" %}
+            <!-- Single Slide -->
+          <div class="singles_items">
+            <div class="education_block_grid style_2">
+          
+              <div class="education_block_thumb">
+                <a href="{% url 'front_end_course_detail' available.id %}">
+                  {% if available.image %}
+                  <img src="{{available.image.url}}" class="img-fluid" alt="">
+                  {% endif %}
+                </a>
+              </div>
+              
+              <div class="education_block_body">
+                <h4 class="bl-title"><a href="{% url 'front_end_course_detail' available.id %}">{{available.judul}}</a></h4>
+              </div>
+
+              <div class="cources_info">
+                <!-- <div class="cources_info_first">
+                  <ul>
+                    <li><em>Start</em>: <strong>{{foreign_language.tanggal_mulai}}</strong></li>
+                    <li class="theme-cl"><em>End</em>: {{foreign_language.tanggal_akhir}}</li>
+                  </ul>
+                </div> -->
+                <div class="cources_info_last">
+                  <h3>Rp{{available.harga_course|intcomma}}</h3>
+                </div>
+              </div>
+              
+              <div class="education_block_footer">
+                <span class="education_block_time"><i class="ti-time mr-2"></i>Valid thru: {{available.tanggal_mulai}} - {{available.tanggal_akhir}}</span>
+              </div>
+
+            </div>
+          </div>
+          {% endfor %}
+
+
+          
+        </div>
+      </div>
+
+    </div>
+    
+  </div>
+</section>
+<!-- ========================== Featured Courses Section =============================== -->
+
+<!-- ============================ Testimonial Start ================================== -->
+<section style="background:url('{% static "frontend-full-learnup/assets/img/testimonial.png" %}')">
+  <div class="container">
+  
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-6 col-sm-12">
+        <div class="sec-heading center">
+          <p>What People Say?</p>
+          <h2 class="testimonial"><span class="theme-cl">Reviews</span> By Our Success & Top Students</h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-12">
+        <div id="testimonials_style" class="slick-carousel-3 arrow_middle">
+
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/sari.png' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Sari Ramadana Syukur</h3>
+                <span class="post">Student of Korean Course (Beginner 1-1)</span>
+              </div>
+            </div>
+            <p class="description">
+              " Jangan pernah melewatkan kelas interaktif karena belajar bersama dengan teman-teman dan didampingi guru Bahasa Korea sangat menyenangkan. Dikelas kita juga diberikan challenge oleh guru untuk melatih Bahasa Korea kita. "
+            </p>
+          </div>
+
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/dinda.png' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Dinda Nurjannah</h3>
+                <span class="post">Student of Korean Course (Intermediate 2-2)</span>
+              </div>
+            </div>
+            <p class="description">
+              " Hal yang disukai dari Educourse adalah sistem ini sangat memudahkan dalam proses pengajaran mulai dari e-book materi, lembar latihan, video kelas, assignment, dan kuis. "
+            </p>
+          </div>
+          
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/syafira.jpeg' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Syafira Putri Ekayani</h3>
+                <span class="post">Student of Korean Course (Beginner 1-1)</span>
+              </div>
+            </div>
+            <p class="description">
+              " sudah gabung di Educourse dari trial sampai regular class. Belajarnya asyik banget! "
+            </p>
+          </div>
+          
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/mega.jpeg' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Mega Tamara</h3>
+                <span class="post">Student of Korean Course (Intermediate 2-1)</span>
+              </div>
+            </div>
+            <p class="description">
+              " Pengajar menjelaskan dengan baik kepada kami, materinya juga mudah dipahami. "
+            </p>
+          </div>
+
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/puspita.jpeg' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Puspitasari</h3>
+                <span class="post">Student of Korean Course (Beginner 1-1)</span>
+              </div>
+            </div>
+            <p class="description">
+              " Meskipun dilaksanakan secara online, ada wali kelas yang selalu mengingatkan tugas dan pengajar yang menjelaskan materi agar mudah dimengerti "
+            </p>
+          </div>
+
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/ranindita.jpeg' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Ranindita Syaradipa</h3>
+                <span class="post">Student of Korean Course (Beginner 1-2)</span>
+              </div>
+            </div>
+            <p class="description">
+              " Fasilitas LMS (Educourse) mudah di akses dari manapun dan kapanpun oleh siswa. "
+            </p>
+          </div>
+
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/isni.jpeg' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Isni Yunita Rahayu</h3>
+                <span class="post">Student of Korean Course (Beginner 1-1)</span>
+              </div>
+            </div>
+            <p class="description">
+              " Saya ingin melanjutkan study di Korea Selatan, dan memilih belajar Bahasa Korea di I-GEN. Sangat sangat menyenangkan! "
+            </p>
+          </div>
+
+
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/aji.png' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Ftaqiy Robbani</h3>
+                <span class="post">Student of Coding Course (Teens)</span>
+              </div>
+            </div>
+            <p class="description">
+              " Belajar coding di Educourse sangat mudah untuk dimengerti dan diikuti oleh pemula karena ada guru yang dapat menuntun kita untuk memahami isi materi. "
+            </p>
+          </div>
+
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/ibu tatik.jpeg' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Ibu Tatik (Ibunda Raisha)</h3>
+                <span class="post">Student Parent's of Coding Course (Intermediate Level 2-1)</span>
+              </div>
+            </div>
+            <p class="description">
+              " Pengajarnya kompeten, ramah, sabar dalam mengajar. Teman sekelasnya seru sehingga suasana kelas selalu menyenangkan. "
+            </p>
+          </div>
+
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/tifasa.png' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Tifasa</h3>
+                <span class="post">Student of Coding Course (Teens Level 2-1)</span>
+              </div>
+            </div>
+            <p class="description">
+              " kelasnya asik, setiap pertemuan ada projectnya jadi lebih fokus, pengajarnya juga ramah. "
+            </p>
+          </div>
+
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/sandi.jpeg' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Sandi (Ayah Nabihan)</h3>
+                <span class="post">Student Parent's of Coding Course (Junior Two Level 2-1)</span>
+              </div>
+            </div>
+            <p class="description">
+              " Belajar di usia dini adalah perpaduan ilmu dan kegembiraan, sehingga kegiatan menambah ilmu terasa menyenangkan. Hal ini yang kami lihat dilakukan oleh Educourse.. "
+            </p>
+          </div>
+
+          <div class="testimonial-detail">
+            <div class="client-detail-box">
+              <div class="pic">
+                <img src="{% static 'testimoni/millah.png' %}" alt="">
+              </div>
+              <div class="client-detail">
+                <h3 class="testimonial-title">Millah Hanifah</h3>
+                <span class="post">Student of Korean Course (Beginner 1-3)</span>
+              </div>
+            </div>
+            <p class="description">
+              " Pola pembelajarannya seru, menarik, mudah dipahami. Pengajarnya baik, dan kekeluargaannya juga teras "
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</section>	
+<!-- ============================ Testimonial End ================================== -->
+
+<!-- ============================== Start Newsletter ================================== -->
+<!-- <section class="newsletter theme-bg inverse-theme">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7 col-md-8 col-sm-12">
+        <div class="text-center">
+          <h2>Join Thousand of Happy Students!</h2>
+          <p>Subscribe our newsletter & get latest news and updation!</p>
+          <form class="sup-form">
+            <input type="email" class="form-control sigmup-me" placeholder="Your Email Address" required="required">
+            <input type="submit" class="btn btn-theme" value="Get Started">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+<!-- ================================= End Newsletter =============================== -->
+{% endblock content %}

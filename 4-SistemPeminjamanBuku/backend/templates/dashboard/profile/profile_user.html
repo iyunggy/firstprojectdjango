@@ -1,0 +1,71 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block breadcrumb_item %}
+<li>Detail User</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading">
+        <h4 class="panel-title">Detail</h4>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Email</td>
+              <td>:</td>
+              <td> {{user.email}}</td>
+            </tr>
+            <tr>
+              <td>Full Name</td>
+              <td>:</td>
+              <td> {{user.fullname}}</td>
+            </tr>
+            <tr>
+              <td>Phone</td>
+              <td>:</td>
+              <td> {{user.phone}}</td>
+            </tr>
+            <tr>
+              <td>Tanggal Lahir</td>
+              <td>:</td>
+              <td>
+                {% if user.tanggal_lahir %}
+                  {{user.tanggal_lahir|date:'Y-m-d'}} <strong>(YYYY-MM-DD)</strong>
+                  {% else %}
+                  -
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Status</td>
+              <td>:</td>
+              <td>{{user.status}}</td>
+            </tr>
+            {% if user.institusi %}
+              <tr>
+                <td>Institusi</td>
+                <td>:</td>
+                <td>{{user.institusi}}</td>
+              </tr>
+            {% endif %}
+            {% if user.domisili %}
+              <tr>
+                <td>Domisili</td>
+                <td>:</td>
+                <td>{{user.domisili}}</td>
+              </tr>
+            {% endif %}
+          </table>
+        </div>
+      </div>
+      <div class="panel-body">
+        <a type="button" class="btn btn-danger" href="{% url 'dashboard' %}"><i class="fa fa-reply"></i> Back</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

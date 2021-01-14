@@ -1,0 +1,88 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>List Quiz</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+      <!-- page untuk admin -->
+      <div class="panel-body">
+        <div class="col-md-6">
+          <a href="{% url 'kelompok_ujian_create' %}" class="btn btn-primary">Tambahkan Quiz</a>
+        </div>
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'kelompok_ujian_list' %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+                <tr>
+                  <th>Kode Quiz</th>
+                  <th>Nama Quiz</th>
+                  <th>Pembuat</th>
+                  <th>Action</th>
+                  <th>SubQuiz</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for list in kelompok_ujian_list %}
+              <tr>
+                <td>{{list.kode_kelompok}}</td>
+                <td>{{list.nama_kelompok}}</td>
+                <td>{{list.user.email}}</td>
+                <td>
+                  <a class='btn btn-success btn-sm' title='Detail' href="{% url 'kelompok_ujian_detail' list.slug %}">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  <a class='btn btn-primary btn-sm' title='Edit' href="{% url 'kelompok_ujian_update' list.slug %}">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  <a class='btn btn-danger btn-sm' title='Delete' href="{% url 'kelompok_ujian_delete' list.slug %}">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </td>
+                <td>
+                  <a class='btn btn-primary btn-sm' title='Buat Ujian' href="{% url 'ujian_create' list.slug %}">Buat SubQuiz
+                  </a>
+                  <a class='btn btn-info btn-sm' title='List Ujian' href="{% url 'ujian_list' list.slug %}">List SubQuiz
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" align="center" style="color: red;">No data</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

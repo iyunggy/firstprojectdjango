@@ -1,0 +1,79 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>List Pengumuman</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" %}
+      <!-- page untuk admin -->
+      <div class="panel-body">
+        <div class="col-md-6">
+          <a href="{% url 'pengumuman_create' %}" class="btn btn-primary">Tambah Pengumuman</a>
+        </div>
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'pengumuman_list' %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div> 
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <th>Judul Pengumuman</th>
+              <th>Deskripsi Singkat</th>
+              <th>Visibily</th>
+              <th style="width: 15%;">Action</th>
+            </thead>
+            <tbody>
+              {% for list in pengumuman_list %}
+              <tr>
+                <td>{{list.judul}}</td>
+                <td>{{list.deskripsi_singkat}}</td>
+                <td>{{list.visibility}}</td>
+                <td>
+                  <a class='btn btn-success btn-sm' title='Detail' href="{% url 'pengumuman_detail' list.id %}">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  <a class='btn btn-primary btn-sm' title='Edit' href="{% url 'pengumuman_update' list.id %}">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                    <a class="btn btn-danger btn-sm" title="Delete" href="{% url 'pengumuman_delete' list.id %}">
+                      <i class="fa fa-trash"></i>
+                    </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" align="center" style="color: red;">No data</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin atau manager sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

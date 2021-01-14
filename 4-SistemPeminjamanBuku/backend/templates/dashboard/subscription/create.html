@@ -1,0 +1,28 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li><a href="{% url 'subscription_list' %}">List Subscription</a></li>
+<li>Create Subscription</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        {% if user.status == "ADMIN"%}
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{form.media}}
+          {{form.as_p}}
+          <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> save</button>
+          <a class="btn btn-danger" href="{% url 'subscription_list' %}"><i class="fa fa-reply"></i> Back</a>
+        </form>
+        {% else %}
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

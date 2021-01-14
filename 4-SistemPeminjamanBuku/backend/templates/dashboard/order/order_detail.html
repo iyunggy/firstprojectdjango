@@ -1,0 +1,277 @@
+{% extends "dashboard/base.html" %}
+{% load humanize %}
+
+{% block breadcrumb_item %}
+<li><a href="{% url 'order_list' %}">List Order</a></li>
+<li>Detail Order</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading">
+        <h4 class="panel-title">Detail</h4>
+      </div>
+
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Created On</td>
+              <td>:</td>
+              <td>{{order.created_on}}</td>
+            </tr>
+            <tr>
+              <td>Order Id</td>
+              <td>:</td>
+              <td>{{order.order_id}}</td>
+            </tr>
+            <tr>
+              <td>Kode Course</td>
+              <td>:</td>
+              <td>{{order.course.course_code}}</td>
+            </tr>
+            <tr>
+              <td>Judul Course</td>
+              <td>:</td>
+              <td>{{order.course.judul}}</td>
+            </tr>
+            <tr>
+              <td>Amount</td>
+              <td>:</td>
+              <td>{{order.harga_course|intcomma}}</td>
+            </tr>
+            <tr>
+              <td>Referal Voucher</td>
+              <td>:</td>
+              <td>
+                {% if order.referal_voucher %}
+                {{order.referal_voucher}}
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Referal Marketing</td>
+              <td>:</td>
+              <td>
+                {% if order.referal_marketing_squard %}
+                  {{order.referal_marketing_squard}}
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Status</td>
+              <td>:</td>
+              <td>{{order.status}}</td>
+            </tr>
+            
+            <!-- {% if order.payment_method == "Manual"  %}
+            <tr>
+              <td><b>Rekening Pembayaran</b></td>
+              <td>:</td>
+              <td><b>Mandiri 164 00 0303 3760 PT. MALEO EDUKASI TEKNOLOGI</b></td>
+            </tr>
+            {% endif %} -->
+              
+          </table>
+        </div>
+      </div>
+
+      {% if order.payment_method == "Manual" and order.status == "BELUM LUNAS" %}
+      <div class="panel-body">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="alert alert-danger text-center">
+            <h2>Rekening Pembayaran: Mandiri 164 00 0303 3760 PT. MALEO EDUKASI TEKNOLOGI</h2>
+          </div>
+        </div>
+      </div>  
+      {% endif %}
+
+      
+      {% if order_manual_payment %}
+      <hr>
+      <div class="panel-body">
+        <h3>Bukti Bayar</h3>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Pembayaran Ke Rekening</td>
+              <td>:</td>
+              <td>{{order_manual_payment.rekening_pembayaran}}</td>
+            </tr>
+            <tr>
+              <td>Status Konfimasi Admin</td>
+              <td>:</td>
+              <td>
+              {% if order_manual_payment.status == "Belum Verifikasi" %}
+                <button disabled="disabled" class="btn btn-danger">{{order_manual_payment.status}}</button>
+              {% else %}
+                <button disabled="disabled" class="btn btn-success">{{order_manual_payment.status}}</button>
+              {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Bukti Bayar</td>
+              <td>:</td>
+              <td>
+              {% if order_manual_payment.bukti_bayar %}
+              <a href="{{order_manual_payment.bukti_bayar.url}}">
+                <img src="{{order_manual_payment.bukti_bayar.url}}" alt="" style="height: 350px; width: auto;">
+              </a>
+              {% else %}
+              -
+              {% endif %}
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+        
+
+      {% if order.status == "LUNAS" and order_bundling %}
+      <hr>
+      <div class="panel-body">
+        <h3>Detail Pesanan :</h3>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Email</td>
+              <td>:</td>
+              <td>{{order_bundling.email_user}}</td>
+            </tr>
+            <tr>
+              <td>Nama Lengkap</td>
+              <td>:</td>
+              <td>{{order_bundling.fullname_user}}</td>
+            </tr>
+            <tr>
+              <td>No telp / No WhatsApp</td>
+              <td>:</td>
+              <td>{{order_bundling.phone_user}}</td>
+            </tr>
+            <tr>
+              <td>Alamat</td>
+              <td>:</td>
+              <td>{{order_bundling.alamat_user|linebreaks}}</td>
+            </tr>
+            <tr>
+              <td>Kelurahan</td>
+              <td>:</td>
+              <td>{{order_bundling.kelurahan_user}}</td>
+            </tr>
+            <tr>
+              <td>Kecamatan</td>
+              <td>:</td>
+              <td>{{order_bundling.kecamatan_user}}</td>
+            </tr>
+            <tr>
+              <td>Kota</td>
+              <td>:</td>
+              <td>{{order_bundling.kota_user}}</td>
+            </tr>
+            <tr>
+              <td>Kode Pos</td>
+              <td>:</td>
+              <td>{{order_bundling.kode_pos_user}}</td>
+            </tr>
+            <tr>
+              <td>Harga Course</td>
+              <td>:</td>
+              <td>{{order_bundling.harga_course|intcomma}}</td>
+            </tr>
+            <tr>
+              <td>Jumlah Pesan</td>
+              <td>:</td>
+              <td>{{order_bundling.quantity_barang}}</td>
+            </tr>
+            <tr>
+              <td>Discount (%)</td>
+              <td>:</td>
+              <td>{{order_bundling.potongan_harga_persentase}} %</td>
+            </tr>
+            <tr>
+              <td>Kurir</td>
+              <td>:</td>
+              <td><strong><i><u>{{order_bundling.kurir}}</u></i></strong></td>
+            </tr>
+            <tr>
+              <td>Jenis Kirim</td>
+              <td>:</td>
+              <td><strong><i><u>{{order_bundling.jenis_kirim}}</u></i></strong></td>
+            </tr>
+            <tr>
+              <td>Ongkos Kirim</td>
+              <td>:</td>
+              <td><strong><i><u>{{order_bundling.ongkos_kirim}}</u></i></strong></td>
+            </tr>
+            <tr>
+              <td>Berat Barang</td>
+              <td>:</td>
+              <td>{{order_bundling.berat_barang}}</td>
+            </tr>
+            <tr>
+              <td>Amount</td>
+              <td>:</td>
+              <td>{{order_bundling.total_harga_course|intcomma}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="panel-body">
+        <div class="compose-options">
+          <div class="pull-left">
+            <a type="button" class="btn btn-danger" href="{% url 'order_list' %}"><i class="fa fa-reply"></i> Back</a>
+          </div>
+          <div class="pull-right">
+            
+            {% if order.payment_method == "Midtrans" %}
+
+              {% if order.status != "LUNAS" %}
+              <button class="btn btn-success" type="submit" onclick="BayarHandler()"><i class="fa fa-send"></i> Bayar Sekarang</button>
+              {% else %}
+              <button class="btn btn-warning" type="submit" disabled><i class="fa fa-check"></i> Sudah Dibayar</button>
+              {% endif %}
+            
+            {% else %}
+
+              {% if order.status != "LUNAS" %}
+              
+                {% if cek_order_manual_payment == False %}
+                <a href="{% url 'manual_payment_create' order.id %}" class="btn btn-success" type="submit"><i class="fa fa-upload"></i> Upload Bukti Bayar</a>
+                {% else %}
+                
+                  {% if user.status == "ADMIN" %}
+                  <a href="{% url 'manual_payment' order_manual_payment.id %}" class="btn btn-warning" type="submit"><i class="fa fa-edit"></i> Verifikasi Pembayaran</a> &nbsp;
+                  {% endif %}
+                  
+                <button class="btn btn-success" disabled><i class="fa fa-upload"></i> Upload Bukti Bayar</button>
+                {% endif %}
+                
+              {% else %}
+              <button class="btn btn-warning" type="submit" disabled><i class="fa fa-check"></i> Sudah Dibayar</button>
+              {% endif %}
+
+            {% endif %}
+              
+          
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+  <script>
+    midtrans_url = '{{order.midtrans_url}}'
+    function BayarHandler() {
+      var myWindow = window.open(midtrans_url);
+    }
+  </script>
+{% endblock scripts %}

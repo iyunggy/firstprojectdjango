@@ -1,0 +1,40 @@
+{% extends "dashboard/base.html" %}
+{% block breadcrumb_item %}
+<li>Detail Teacher</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading">
+        <h4 class="panel-title">Detail</h4>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Teacher Name</td>
+              <td>:</td>
+              <td>{{teacher.teacher_name}}</td>
+            </tr>
+            <tr>
+              <td>Teacher Image</td>
+              <td>:</td>
+              <td><img src="{{teacher.teacher_image.url}}" alt="" style="width: 50%;"></td>
+            </tr>
+            <tr>
+              <td>Keterangan</td>
+              <td>:</td>
+              <td>{{teacher.keterangan|safe}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="panel-body">
+        <a type="button" class="btn btn-danger" href="{% url 'teacher_list' %}"><i class="fa fa-reply"></i> Back</a> 
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

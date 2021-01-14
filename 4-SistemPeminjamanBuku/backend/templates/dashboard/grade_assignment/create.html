@@ -1,0 +1,33 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li> <a href="{% url 'speaking_list'  %}">List Speaking Submission</a></li>
+<li>Create Grade Assignment</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+      <!-- page untuk admin -->
+      <div class="panel-body">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{form.media}}
+          <!-- {{form.as_p}} -->
+          {{form_grade.as_p}}
+          <a class="btn btn-danger" href="{% url 'speaking_detail' submission_id %}"><i class="fa fa-reply m-r-xs"></i>Cancel</a>
+          <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> save</button>
+        </form>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

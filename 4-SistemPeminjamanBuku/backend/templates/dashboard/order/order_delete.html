@@ -1,0 +1,84 @@
+{% extends "dashboard/base.html" %}
+{% block breadcrumb_item %}
+<li><a href="{% url 'order_list' %}">List Order</a></li>
+<li>Delete Order</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading">
+        <h4 class="panel-title">Delete Confirmation</h4>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Created On</td>
+              <td>:</td>
+              <td>{{order.created_on}}</td>
+            </tr>
+            <tr>
+              <td>Order Id</td>
+              <td>:</td>
+              <td>{{order.order_id}}</td>
+            </tr>
+            <tr>
+              <td>Kode Course</td>
+              <td>:</td>
+              <td>{{order.course.course_code}}</td>
+            </tr>
+            <tr>
+              <td>Judul Course</td>
+              <td>:</td>
+              <td>{{order.course.judul}}</td>
+            </tr>
+            <tr>
+              <td>Amount</td>
+              <td>:</td>
+              <td>{{order.harga_course}}</td>
+            </tr>
+            <tr>
+              <td>Referal Voucher</td>
+              <td>:</td>
+              <td>  
+                {% if order.referal_voucher %}
+                {{order.referal_voucher}}
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Referal Marketing</td>
+              <td>:</td>
+              <td>
+                {% if order.referal_marketing_squard %}
+                  {{order.referal_marketing_squard}}
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Status</td>
+              <td>:</td>
+              <td>{{order.status}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form method="POST">
+          {% csrf_token %}
+          
+          {% if order.status == "BELUM LUNAS" %}
+          <button type="submit" class="btn btn-primary"> Ok</button>
+          {% else %}
+          <button type="submit" class="btn btn-warning" disabled> Order sudah lunas dan tidak bisa dihapus</button>
+          {% endif %}
+            
+          <a type="button" class="btn btn-danger" href="{{request.META.HTTP_REFERER}}"><i class="fa fa-reply"></i> Back</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

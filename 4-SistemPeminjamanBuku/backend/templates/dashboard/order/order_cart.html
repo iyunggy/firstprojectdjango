@@ -1,0 +1,27 @@
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-basket"></i><span
+            class="badge badge-danger pull-right">{{orders_count}}</span></a>
+    <ul class="dropdown-menu title-caret dropdown-lg" role="menu">
+        <li class="dropdown-menu-list slimscroll messages">
+            <ul class="list-unstyled">
+                <div id="order_cart">
+                    {% for order in orders %}
+                    <li>
+                        <a href="{% url 'order_detail' order.id %}">
+                            <p class="msg-name">{{order.order_id}}</p>
+                            <p class="task-details">{{order.judul}}</p>
+                            <span class="badge badge-roundless badge-default pull-right">{{order.status}}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </div>
+            </ul>
+        </li>
+        {% if orders_count != 0 %}
+        <li class="drop-all"><a href="{% url 'order_list' %}" class="text-center">Semua Order</a></li>
+        {% else %}
+        <p class="text-center" style="padding: 2%; color: red;">Anda tidak memiliki order yang belum dibayar</p>
+        {% endif %}
+    </ul>
+</li>
+<li class="dropdown">

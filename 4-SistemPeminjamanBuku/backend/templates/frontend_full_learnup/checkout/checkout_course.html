@@ -1,0 +1,169 @@
+{% extends "frontend_full_learnup/base.html" %}
+{% load humanize %}
+{% load mathfilters %}
+
+{% block content %}
+<!-- ============================ Page Title Start================================== -->
+<section class="page-title">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-12">
+        
+        <div class="breadcrumbs-wrap">
+          <h1 class="breadcrumb-title">Checkout</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+            </ol>
+          </nav>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================ Page Title End ================================== -->			
+
+
+<!-- ============================ Add To cart ================================== -->
+{% if user.is_authenticated %}
+  <section class="pt-0">
+    <div class="container">
+      
+      <div class="row">
+        <div class="col-lg-8 col-md-12">
+        
+          <div class="cart_totals checkout light_form mb-4">
+            <h4>Checkout Info</h4>
+            <!-- <form action="{% url 'front_end_course_checkout' pk %}" method="post">
+              {% csrf_token %} -->
+              <div class="row">
+              
+                <div class="col-lg-12 col-md-12">
+                  <div class="form-group">
+                    <label for="email">Your Email</label>
+                    <input type="email" class="form-control" id="email" name=email placeholder="Masukkan Email" style="text-transform: lowercase;" value="{{user.email}}" readonly>
+                  </div>
+                </div>
+                
+                <div class="col-lg-6 col-md-6">
+                  <div class="form-group">
+                    <label>Your Full Name</label>
+                    <input type="text" class="form-control" name="fullname" placeholder="Masukkan Nama Lengkap" value="{{user.fullname}}" readonly>
+                  </div>
+                </div>
+                
+                <div class="col-lg-6 col-md-6">
+                  <div class="form-group">
+                    <label>Your Phone Number</label>
+                    <input type="number" class="form-control" name="no_hp" placeholder="Masukkan No HP"  value="{{user.phone}}" readonly>
+                  </div>
+                </div>
+
+                <input type="hidden" class="form-control" name="kode_course"  value="{{courses.course_code}}" readonly>
+                <!-- <input type="hidden" class="form-control" name="harga_course"  value="{{courses.harga_course}}" readonly> -->
+                <input type="hidden" class="form-control"  name="harga_course" id="harga_course" />
+                <input type="hidden" class="form-control"  name="referal_voucher" id="referal_voucher" />
+
+              </div>
+              {% if getorder.status == "BELUM LUNAS" %}
+              <div class="alert alert-warning text-center">
+                <!-- Klik tombol <strong>Bayar Sekarang</strong> untuk melakukan pembayaran saat ini juga. Anda juga bisa <strong><a href="{% url 'order_list' %}">My Order</a></strong> untuk bisa melihat keseluruhan Order yang ada.   -->
+                Click the <strong>Pay Now</strong> button to make a payment right now. You can also <strong><a href="{% url 'order_list' %}">My Order List</a></strong> <em>or</em> <strong><a href="{% url 'order_detail' getorder.id %}">Order Detail</a></strong> to see all existing Orders.
+              </div>
+              
+                {% if order_payment_method == "Midtrans" %}
+                <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="BayarHandler()">Bayar Sekarang</button>
+                {% else %}
+                <br>
+                <div class="alert alert-info text-center">
+                  Silahkan Lakukan Pembayaran Ke Rekening Dibawah Ini:
+                  <br><br>
+                  <h3>No Rekening: 
+                    <u>
+                    {% if courses.payment_method == Manual %}
+                    {{courses.rekening_payment_manual}}
+                    {% else %}
+                    Mandiri 164 00 0303 3760 PT. MALEO EDUKASI TEKNOLOGI
+                    {% endif %}
+                    </u>
+                  </h3>
+                </div>
+                <a type="submit" href="{% url 'manual_payment_create' getorder.id %}" class="btn btn-primary btn-lg btn-block">Konfirmasi Pembayaran</a>
+                {% endif %}
+                
+              {% else %}
+              <button class="btn btn-primary btn-lg btn-block" type="submit" disabled>Pembayaran Sudah diterima</button>
+              {% endif %}
+            <!-- </form> -->
+          </div>
+          
+        </div>
+        
+        <div class="col-lg-4 col-md-12">
+
+          <!-- Total Cart -->
+          <div class="cart_totals checkout">
+            <h4>Order Summary</h4>
+            <div class="cart-wrap">
+              <ul class="cart_list">
+                <li>Order id <strong>{{order_id}}</strong></li>
+                <li>Course code <strong>{{courses.course_code}}</strong></li>
+                
+                {% if id_marketing_squard != '' %}
+                <li>Marketing <strong>{{id_marketing_squard}}</strong></li>
+                {% endif %}
+                  
+              </ul>
+              <div class="flex_cart" style="margin-bottom: 5px;">
+                <div class="flex_cart_1">
+                  Amount pay
+                </div>
+                <div class="flex_cart_2">
+                  {% if order_payment_method == "Midtrans" %}
+                  <strong>Rp {{total_bayar|intcomma}}</strong>
+                  {% else %}
+                  <strong>Rp {{harga_course|add:digit_terakhir_bayar|intcomma}}</strong>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- {% if getorder.payment_method == "Manual" %}
+              <div class="flex_cart" style="margin-bottom: 5px;">
+                <div class="flex_cart_1">
+                  Pay Code
+                </div>
+                <div class="flex_cart_2">
+                  <strong>Rp {{digit_terakhir_bayar|intcomma}}</strong>
+                </div>
+              </div>
+              {% endif %} -->
+                
+            </div>
+
+          </div>
+
+        </div>
+        
+      </div>
+      
+    </div>
+  </section>
+{% else %}
+  <div class="container">
+    <div class="alert alert-danger text-center" style="margin-bottom: 200px;">
+      <strong>You have to <a href="{% url 'login_user' %}?next=/course/checkout/{{courses.id}}">LOGIN</a> or <a href="{% url 'signup_new' %}?next=/course/checkout/{{courses.id}}">SIGN-UP</a> first.</strong>
+    </div>
+  </div>
+{% endif %}
+<!-- ============================ Add To cart End ================================== -->
+{% endblock content %}
+
+{% block scripts %}
+<script>
+  function BayarHandler() {
+    snap.pay('{{token}}');
+  }
+</script>
+{% endblock scripts %}

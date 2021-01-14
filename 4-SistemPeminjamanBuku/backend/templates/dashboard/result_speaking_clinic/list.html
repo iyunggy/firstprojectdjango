@@ -1,0 +1,93 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>List Result Speaking Clinic</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+      <!-- page untuk admin -->
+      <div class="panel-body">
+        <div class="col-md-6">
+        </div>
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search" value="{{value_query}}">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'result_speaking_clinic_list' %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+                <tr>
+                  <th style="width: 150px;">Created On</th>
+                  <th>Course</th>
+                  <th>Question</th>
+                  <th>User</th>
+                  <th>Audio Record</th>
+                  <th>Score</th>
+                  <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for list in result_speaking_clinic %}
+              <tr>
+                <td>{{list.created_on}}</td>
+                <td>{{list.question.course.course_code}}</td>
+                <td>{{list.question.text_question|linebreaks}}</td>
+                <td>{{list.user.fullname}}</td>
+                <td>
+                  {% if list.file_audio %}
+                  <audio controls  controlsList="nodownload">
+                    <source src="{{list.file_audio.url}}">
+                  Your browser does not support the audio element.
+                  </audio>
+                  {% endif %}
+                </td>
+                <td>{{list.score}}</td>
+                <td>
+                  <a class='btn btn-success btn-sm' title='Detail' href="{% url 'result_speaking_clinic_detail' list.id %}">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  <a class='btn btn-primary btn-sm' title='Edit' href="{% url 'result_speaking_clinic_update' list.id %}">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  <a class='btn btn-danger btn-sm' title='Delete' href="{% url 'result_speaking_clinic_delete' list.id %}">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" align="center" style="color: red;">No data</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,192 @@
+{% extends "dashboard/base.html" %}
+{% block breadcrumb_item %}
+<li> <a href="{% url 'course_student_list'  %}">List Course</a></li>
+<li>Detail Course</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+
+    {% if langganan != "Anda Belum Subscribe Course Ini" %}
+    <div class="panel panel-white">
+      <!-- page untuk admin -->
+      <div class="panel-heading">
+        <h4 class="panel-title">Detail</h4>
+      </div>
+      <div>
+        <div class="table-responsive ">
+          <table class="table table-striped">
+            <tr>
+              <td>Judul Course</td>
+              <td>:</td>
+              <td>{{course.judul}}</td>
+            </tr>
+            <tr>
+              <td>Deskripsi Singkat</td>
+              <td>:</td>
+              <td>{{course.deskripsi_singkat}}</td>
+            </tr>
+            <tr>
+              <td>Keterangan Detail</td>
+              <td>:</td>
+              <td>{{course.keterangan_detail|safe}}</td>
+            </tr>
+          </table>
+        </div>
+        {% if course.tanggal_mulai <= today and course.tanggal_akhir >= today %}
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <hr>
+            {% for topic in topics %}
+              {% if topic.is_display %}
+              <div class="panel-group" id="test1" role="tablist" aria-multiselectable="true">
+                  <div class="panel panel-primary">
+                      <div class="panel-heading" role="tab" id="headingOne1">
+                          <h4 class="panel-title">
+                              <a data-toggle="collapse" data-parent="test1" href="#{{topic.id}}" aria-expanded="true" aria-controls="collapseOne">
+                                TOPIC {{topic.urutan_display}}. {{topic.judul}}
+                              </a>
+                          </h4>
+                      </div>
+                      <div id="{{topic.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne1">
+                          <div class="panel-body">
+                                {{topic.keterangan|safe}}
+                                <br>
+                                {% if topic.kode_quiz %}
+                                  Kode Quiz (문법):  <a href="{% url 'check_kode' topic.kode_quiz %}"> {{topic.kode_quiz}} </a><br>
+                                {% endif %}
+                                {% if topic.kode_assignment %}
+                                Kode Assignment (말하기/쓰기) : <a href="{% url 'assignment_list' topic.id %}"> Klik di sini </a><br>
+                                {% endif %}
+                                <br>
+                                {% if topic.bahan_upload %}
+                                  Materi Kuliah :  <a href="{% url 'course_material_detail'  topic.id %}">{{topic.bahan_upload}}</a> <br>
+                                {% endif %}
+                                <br><br>
+                                {{topic.jadwal_meetup | safe}}
+                                <br>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+                <hr>
+              {% endif %}
+            {% endfor %}
+          </table>
+        </div>
+        {% else %}
+          {% if course.tanggal_mulai  >= today %}
+            <div class="alert alert-danger" role="alert">
+              Kelas ini belum dimulai. Silahkan melakukan Enrollment supaya Anda bisa mengikuti kelas ini.
+            </div>
+          {% else %}
+            <div class="alert alert-warning" role="alert">
+              Kelas ini telah selesai. Silahkan mendaftar pada kelas lain untuk mengikuti perkuliahan yang akan dibuka.
+            </div>
+          {% endif %}
+
+        {% endif %}
+      </div>
+
+      
+      {% if msg == "question ada" %}
+        
+          {% if speaking_answer_count >= calculate_max_repeat_speaking %}
+          <div class="panel-body">
+            <div class="alert alert-info text-center">
+              <p>Selamat Anda telah menyelesaikan <b>speaking test</b>. Anda dapat melihat score summary di halaman ini.</p>
+            </div>
+          </div>
+          {% endif %}
+            
+          {% if course.category_course == "Speaking Clinic" %}
+          <!-- jika category course speaking clinict -->
+          <div class="panel-body">
+            {% if  speaking_answer_count >= calculate_max_repeat_speaking %}
+            <button class="btn btn-primary" disabled>START SPEAKING TEST</button>
+            {% else %}
+            <a class="btn btn-primary" href="{% url 'check_speaking_test' course.pk %}">START SPEAKING TEST</a>
+            {% endif %}
+          </div>
+          
+            {% for ans in speak_ans %}
+              <div class="panel-body">
+                <div class="panel-group" id="test2" role="tablist" aria-multiselectable="true">
+                  <div class="panel panel-primary">
+                      <div class="panel-heading" role="tab" id="headingOne2">
+                          <h4 class="panel-title">
+                              <a data-toggle="collapse" data-parent="test2" href="#{{ans.speaking_question.id}}" aria-expanded="true" aria-controls="collapseOne2">
+                                {{ans.speaking_question.urutan_display}}. {{ans.speaking_question.text_question}}   {% if ans.top_score %} (Your top score: {{ans.top_score.score}}) {% endif %}
+                              </a>
+                          </h4>
+                      </div>
+                      <div id="{{ans.speaking_question.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne2">
+                          <div class="panel-body">
+                            <div class="table-responsive">
+                              <table class="table table-bordered">
+                                <thead>
+                                  <th>Created On</th>
+                                  <th>User</th>
+                                  <th>Question</th>
+                                  <th>Translated Sentences</th>
+                                  <th>Voice Recorder</th>
+                                  <th>Score</th>
+                                </thead>
+                                <tbody>
+                                  {% for ans in ans.speaking_answer %}
+                                  <tr>
+                                    <td>{{ans.created_on}}</td>
+                                    <td>{{ans.user}}</td>
+                                    <td>{{ans.question}}</td>
+                                    <td>{{ans.translated_sentences}}</td>
+                                    <td>
+                                      {% if ans.file_audio %}
+                                      <audio controls  controlsList="nodownload">
+                                        <source src="{{ans.file_audio.url}}">
+                                      Your browser does not support the audio element.
+                                      </audio>
+                                      {% endif %}
+                                    </td>
+                                    <td>{{ans.score}}</td>
+                                  </tr>
+                                  {% empty %}
+                                  <tr>
+                                    <td colspan="4" align="center" style="color: red;">No Answer Yet</td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            {% endfor %}
+            
+          {% endif %}
+
+      {% endif %}
+        
+        
+      <div class="panel-body">
+        <h3 class="text-center">Ingin berlatih lagi ? Silahkan klik <a href="{% url 'frontend_course_by_category' course.category_course %}"><b>LINK</b></a> berikut.</h3>
+      </div>
+
+      <div class="panel-body">
+        <a type="button" class="btn btn-danger" href="{% url 'course_student_list' %}"><i class="fa fa-reply"></i> Back</a>
+      </div>
+    {% else %}
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <strong>{{langganan}} !</strong>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+</div>
+{% endblock content %}

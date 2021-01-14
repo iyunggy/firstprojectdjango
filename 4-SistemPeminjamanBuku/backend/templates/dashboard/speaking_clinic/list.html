@@ -1,0 +1,85 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li><a href="{% url 'course_list' %}">List Course</a></li>
+<li>List Speking Question</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <div class="col-md-6">
+        {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+          <a href="{% url 'speaking_clinic_question_create' pk_course %}" class="btn btn-primary">Tambah Speaking Question</a>
+        {% endif %}
+        </div>
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'speaking_clinic_question_list' pk_course %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <th style="width: 20px;">Urutan Display</th>
+              <th>Course</th>
+              <!-- <th>Instruction</th> -->
+              <th>Question</th>
+              <th>Language</th>
+              <th>Max Repeat Record</th>
+              <th>Max Duration Record (second)</th>
+              <th style="width: 15%;">Action</th>
+            </thead>
+            <tbody>
+              {% for list in speaking_clinic_question_list %}
+              <tr>
+                <td>{{list.urutan_display}}</td>
+                <td>{{list.course.judul}}</td>
+                <!-- <td>{{list.instruction}}</td> -->
+                <td>{{list.text_question|linebreaks}}</td>
+                <td>{{list.language}}</td>
+                <td>{{list.max_repeat}}</td>
+                <td>{{list.answer_duration}}</td>
+                <td>
+                  <a class='btn btn-success btn-sm' title='Detail' href="{% url 'speaking_clinic_question_detail' list.id %}">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+                  <a class='btn btn-primary btn-sm' title='Edit' href="{% url 'speaking_clinic_question_update' list.id %}">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                    <a class="btn btn-danger btn-sm" title="Delete" href="{% url 'speaking_clinic_question_delete' list.id %}">
+                      <i class="fa fa-trash"></i>
+                    </a>
+                    {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="7" align="center" style="color: red;">No data</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+          <a type="button" class="btn btn-danger" href="{% url 'course_list' %}"><i class="fa fa-reply"></i> Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

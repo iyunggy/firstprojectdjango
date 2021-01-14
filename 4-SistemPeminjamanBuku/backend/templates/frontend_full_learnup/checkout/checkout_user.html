@@ -1,0 +1,371 @@
+{% extends "frontend_full_learnup/base.html" %}
+{% load humanize %}
+{% load mathfilters %}
+
+{% block content %}
+<!-- ============================ Page Title Start================================== -->
+<section class="page-title">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-12">
+        
+        <div class="breadcrumbs-wrap">
+          <h1 class="breadcrumb-title">Checkout</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+            </ol>
+          </nav>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================ Page Title End ================================== -->			
+
+
+<!-- ============================ Add To cart ================================== -->
+{% if user.is_authenticated %}
+  <section class="pt-0">
+    <div class="container">
+      
+      <div class="row">
+        <div class="col-lg-8 col-md-12">
+        
+          <div class="cart_totals checkout light_form mb-4">
+            <h4>Checkout Info</h4>
+            <form action="{% url 'front_end_course_checkout' pk %}" method="post">
+              {% csrf_token %}
+              <div class="row">
+              
+                <div class="col-lg-12 col-md-12">
+                  <div class="form-group">
+                    <label for="email">Your Email</label>
+                    <input type="email" class="form-control" id="email" name=email placeholder="Masukkan Email" style="text-transform: lowercase;" value="{{user.email}}" readonly>
+                  </div>
+                </div>
+                
+                <div class="col-lg-6 col-md-6">
+                  <div class="form-group">
+                    <label>Your Full Name</label>
+                    <input type="text" class="form-control" name="fullname" placeholder="Masukkan Nama Lengkap" value="{{user.fullname}}" readonly>
+                  </div>
+                </div>
+                
+                <div class="col-lg-6 col-md-6">
+                  <div class="form-group">
+                    <label>Your Phone Number</label>
+                    <input type="number" class="form-control" name="no_hp" placeholder="Masukkan No HP"  value="{{user.phone}}" readonly>
+                  </div>
+                </div>
+
+                <input type="hidden" class="form-control" name="kode_course"  value="{{courses.course_code}}" readonly>
+                <!-- <input type="hidden" class="form-control" name="harga_course"  value="{{courses.harga_course}}" readonly> -->
+                <input type="hidden" class="form-control"  name="harga_course" id="harga_course" />
+                <input type="hidden" class="form-control"  name="referal_voucher" id="referal_voucher" />
+                <input type="hidden" class="form-control"  name="order_payment_method" id="order_payment_method" value="{{courses.payment_method}}"/>
+                <!-- input kode marketing squard -->
+                <input type="hidden" class="form-control" name="id_marketing_squard" value="{{id_marketing_squard}}" />
+
+              </div>
+              <div class="row">
+                <div class="col-lg-12 col-md-12">
+                  <div class="form-group">
+                    <label><strong>Please Select the Payment Method That You Will Do </strong></label>
+                  </div>
+                </div>
+              </div>
+
+              
+              {% if courses.payment_method == "Midtrans" %}
+                <div class="row">
+                  <div class="col-md-6">
+                    <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="checkoutFunction()">Payment Gateway</button>
+                  </div>
+                  <div class="col-md-6">
+                    <a href="#" class="btn btn-success btn-lg btn-block" data-toggle="modal" data-target="#transfer_manual">Transfer Manual</a>
+                  </div>
+                </div>
+              {% else %}
+              <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="checkoutFunction()">Continue to Checkout</button>
+              {% endif %}
+                
+            </form>
+          </div>
+          
+        </div>
+        
+        <div class="col-lg-4 col-md-12">
+
+          <!-- Total Cart -->
+          <div class="cart_totals checkout">
+            <h4>Order Summary</h4>
+            <div class="cart-wrap">
+              <ul class="cart_list">
+                <li>Course code <strong>{{courses.course_code}}</strong></li>
+              </ul>
+              <div class="flex_cart" style="margin-bottom: 5px;">
+                <div class="flex_cart_1">
+                  Amount pay
+                </div>
+                <div class="flex_cart_2">
+                  <strong id="hargacourse_old">Rp {{courses.harga_course|intcomma}}</strong><br>
+                  <strong id="hargacourse_new"></strong>
+                </div>
+              </div>
+
+              {% if courses.payment_method == "Midtrans" %}
+              <div class="flex_cart" style="margin-bottom: 5px;">
+                <div class="flex_cart_1" style="font-size: 0.9rem;">
+                  Payment Gateway Charge (Midtrans)
+                </div>
+                <div class="flex_cart_2">
+                  <strong id="paymentcharge_old">
+                    {% if courses.harga_course > 200000 %}
+                      Rp {{courses.harga_course|mul:0.02|intcomma}}
+                    {% else %}
+                      Rp 4,000.0
+                    {% endif %}
+                  </strong><br>
+                  <strong id="paymentcharge_new"></strong>
+                </div>
+              </div>
+                {% endif %}
+              <!-- <button type="button" class="btn checkout_btn">Proceed To Checkout</button> -->
+            </div>
+
+            <hr>
+
+            <p id="vouchertext" style="color:red"><i>Masukan voucher di sini untuk mendapatkan harga spesial</i></p>
+            <div class="input-group">
+              <input type="text" class="form-control" id="input_voucher" placeholder="Voucher code" value="{{kode_voucher}}">
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-info" onclick="RedeemHandler()">Redeem</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        
+      </div>
+      
+    </div>
+  </section>
+{% else %}
+  <div class="container">
+    <div class="alert alert-danger text-center" style="margin-bottom: 200px;">
+    {% if kode_voucher != '' and id_marketing_squard == '' %}
+      <strong>You have to <a href="{% url 'login_user' %}?next=/course/checkout/{{courses.id}}/{{kode_voucher}}">LOGIN</a> or <a href="{% url 'signup_new' %}?next=/course/checkout/{{courses.id}}/{{kode_voucher}}">SIGN-UP</a> first.</strong>
+    {% elif kode_voucher != '' and id_marketing_squard != '' %}
+      <strong>You have to <a href="{% url 'login_user' %}?next=/course/checkout/{{courses.id}}/{{kode_voucher}}/{{id_marketing_squard}}">LOGIN</a> or <a href="{% url 'signup_new' %}?next=/course/checkout/{{courses.id}}/{{kode_voucher}}/{{id_marketing_squard}}">SIGN-UP</a> first.</strong>
+    {% else %}
+      <strong>You have to <a href="{% url 'login_user' %}?next=/course/checkout/{{courses.id}}">LOGIN</a> or <a href="{% url 'signup_new' %}?next=/course/checkout/{{courses.id}}">SIGN-UP</a> first.</strong>
+    {% endif %}
+    </div>
+  </div>
+{% endif %}
+<!-- ============================ Add To cart End ================================== -->
+{% endblock content %}
+
+
+{% block modal %}
+<!-- Modal -->
+<div class="modal fade" id="transfer_manual" tabindex="-1" role="dialog" aria-labelledby="trnsfer_manual_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered login-pop-form" role="document">
+    <div class="modal-content" id="trnsfer_manual_modal">
+      <span class="mod-close" data-dismiss="modal" aria-hidden="true"><i class="ti-close"></i></span>
+      <div class="modal-body">
+        <h4 class="modal-header-title">Perhatian</h4>
+        <div class="login-form">
+          <p>Pembayaran transfer manual tidak dikenakan payment charge. Pembayaran ini juga di cek secara manual oleh Admin.</p>
+          <p>Apakah Anda yakin ingin melakukan pembayan secara transfer manual ?</p>
+
+          <form action="{% url 'front_end_course_checkout' pk %}" method="post">
+            {% csrf_token %}            
+            <input type="hidden" class="form-control" id="email" name=email placeholder="Masukkan Email" style="text-transform: lowercase;" value="{{user.email}}" readonly>
+            <input type="hidden" class="form-control" name="fullname" placeholder="Masukkan Nama Lengkap" value="{{user.fullname}}" readonly>
+            <input type="hidden" class="form-control" name="no_hp" placeholder="Masukkan No HP"  value="{{user.phone}}" readonly>
+            <input type="hidden" class="form-control" name="kode_course"  value="{{courses.course_code}}" readonly>
+            <input type="hidden" class="form-control"  name="harga_course" id="manual_harga_course" />
+            <input type="hidden" class="form-control"  name="referal_voucher" id="manual_referal_voucher" />
+            <input type="hidden" class="form-control"  name="order_payment_method" id="order_payment_method" value="Manual"/>
+            <!-- input kode marketing squard -->
+            <input type="hidden" class="form-control" name="id_marketing_squard" value="{{id_marketing_squard}}" />
+
+            <div class="form-group">
+            <button type="submit" class="btn btn-success btn-md full-width">Lanjut Pembayaran</button>
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal -->
+{% endblock modal %}
+  
+
+
+{% block scripts %}
+{% if user.is_authenticated %}
+<!----------------------------------- awal code buat voucher otomatis ----------------------------------------->
+<script>
+  var kode_voucher = $('#input_voucher').val()
+  // console.log(kode_voucher)
+  if (kode_voucher != ''){
+
+  // fetch("https://educourse.i-gen.co.id/api/voucher/"+kode_voucher)
+  fetch("http://127.0.0.1:8000/api/voucher/"+kode_voucher)
+    .then(response => response.json())
+    .then(data => {
+      if(data.length == 0){
+        alert('Tidak ada voucher code')
+        $("#hargacourse_old").css({"text-decoration": "none", 'color': 'black' });
+        $("#hargacourse_new").hide()
+        var element2 = document.getElementById("vouchertext");
+        element2.innerHTML = "Masukan voucher di sini untuk mendapatkan harga spesial"
+        // harga course voucher di parsing ke harga_couse di input hidden
+        document.getElementById("harga_course").value = harga_course;
+        // untuk transfer manual
+        document.getElementById("manual_harga_course").value = harga_course;
+      }else{
+        var course_code = "{{courses.id}}"
+        if (data[0].is_valid == true && course_code == data[0].course){
+          $("#hargacourse_new").show()
+          $("#hargacourse_old").css({"text-decoration": "line-through", "color": "red"});
+          harga_course = data[data.length-1].harga
+          var element = document.getElementById("hargacourse_new");
+          element.innerHTML = "Rp. "+data[data.length-1].harga.toLocaleString();
+          var element2 = document.getElementById("vouchertext");
+          element2.innerHTML = "Selamat! Voucher berhasil diterapkan"
+          // harga course voucher di parsing ke harga_couse di input hidden
+          document.getElementById("harga_course").value = harga_course;
+          // masukkan referal_voucher dengan kode_voucher
+          document.getElementById("referal_voucher").value = kode_voucher;
+          // untuk transfer manual
+          document.getElementById("manual_harga_course").value = harga_course;
+          document.getElementById("manual_referal_voucher").value = kode_voucher;
+          // untuk paymentcharge pembayaran dari midtrans
+          // console.log('harga_course', harga_course)
+          if (payment_method_course == "Midtrans") {
+            if (harga_course > 200000) {
+              // console.log('yes')
+              payment_charge = harga_course * 0.02
+            } else if (harga_course == 0){
+              // console.log('no')
+              payment_charge = 0
+            } else {
+              payment_charge = 4000
+            }
+            console.log(payment_charge)
+            $("#paymentcharge_new").show()
+            $("#paymentcharge_old").css({"text-decoration": "line-through", "color": "red"});
+            var x = document.getElementById("paymentcharge_new");
+            x.innerHTML = "Rp. "+payment_charge.toLocaleString();
+          } else {
+            console.log('ini manual loh')
+          }
+
+        }else{
+          alert("Kode ini tidak berlaku untuk course yang dipilih")
+        }
+      }
+    });
+  }
+</script>
+{% endif %}
+<!----------------------- batas akhir penambahan code --------------------------------------------->
+
+<script>
+  // console.log('https://app.sandbox.midtrans.com/snap/v1/transactions')
+  var payment_method_course = "{{courses.payment_method}}"
+  // console.log('payment_method', payment_method_course) // pilihan Midtrans / Manual
+  var harga_course = parseInt("{{courses.harga_course}}")
+  // harga course voucher di parsing ke harga_couse di input hidden
+  document.getElementById("harga_course").value = harga_course;
+  // untuk transfer manual
+  document.getElementById("manual_harga_course").value = harga_course;
+
+  function RedeemHandler(){
+
+      let kode_voucher = $('#input_voucher').val()
+      // console.log(kode_voucher)
+      if (kode_voucher != ''){
+
+        // let url = "{% url 'voucherbycode-filter' "+kode_voucher+" %}";
+        // console.log(url)
+        fetch("https://educourse.i-gen.co.id/api/voucher/"+kode_voucher)
+        // fetch("http://127.0.0.1:8000/api/voucher/"+kode_voucher)
+          .then(response => response.json())
+          .then(data => {
+            if(data.length == 0){
+              alert('Tidak ada voucher code')
+              $("#hargacourse_old").css({"text-decoration": "none", 'color': 'black' });
+              $("#hargacourse_new").hide()
+              var element2 = document.getElementById("vouchertext");
+              element2.innerHTML = "Masukan voucher di sini untuk mendapatkan harga spesial"
+              // harga course voucher di parsing ke harga_couse di input hidden
+              document.getElementById("harga_course").value = harga_course;
+              // untuk transfer manual
+              document.getElementById("manual_harga_course").value = harga_course;
+            }else{
+              var course_code = "{{courses.id}}"
+              if (data[0].is_valid == true && course_code == data[0].course){
+                $("#hargacourse_new").show()
+                $("#hargacourse_old").css({"text-decoration": "line-through", "color": "red"});
+                harga_course = data[data.length-1].harga
+                var element = document.getElementById("hargacourse_new");
+                element.innerHTML = "Rp. "+data[data.length-1].harga.toLocaleString();
+                var element2 = document.getElementById("vouchertext");
+                element2.innerHTML = "Selamat! Voucher berhasil diterapkan"
+                // harga course voucher di parsing ke harga_couse di input hidden
+                document.getElementById("harga_course").value = harga_course;
+                // masukkan referal_voucher dengan kode_voucher
+                document.getElementById("referal_voucher").value = kode_voucher;
+                // untuk transfer manual
+                document.getElementById("manual_harga_course").value = harga_course;
+                document.getElementById("manual_referal_voucher").value = kode_voucher;
+                // untuk paymentcharge pembayaran dari midtrans
+                // console.log('harga_course', harga_course)
+                if (payment_method_course == "Midtrans") {
+                  if (harga_course > 200000) {
+                    // console.log('yes')
+                    payment_charge = harga_course * 0.02
+                  } else if (harga_course == 0){
+                    // console.log('no')
+                    payment_charge = 0
+                  } else {
+                    payment_charge = 4000
+                  }
+                  console.log(payment_charge)
+                  $("#paymentcharge_new").show()
+                  $("#paymentcharge_old").css({"text-decoration": "line-through", "color": "red"});
+                  var x = document.getElementById("paymentcharge_new");
+                  x.innerHTML = "Rp. "+payment_charge.toLocaleString();
+                } else {
+                  console.log('ini manual loh')
+                }
+
+              }else{
+                alert("Kode ini tidak berlaku untuk course yang dipilih")
+              }
+            }
+          });
+      }else{
+          alert('Tuliskan kode voucher terlebih dahulu')
+          $("#hargacourse_old").css({"text-decoration": "none", 'color': 'black' });
+          $("#hargacourse_new").hide()
+          var element2 = document.getElementById("vouchertext");
+          element2.innerHTML = "Masukan voucher di sini untuk mendapatkan harga spesial"
+          // kembalikan payment charge
+          $("#paymentcharge_old").css({"text-decoration": "none", 'color': 'black' });
+          $("#paymentcharge_new").hide()
+      }
+
+  }
+</script>
+{% endblock scripts %}

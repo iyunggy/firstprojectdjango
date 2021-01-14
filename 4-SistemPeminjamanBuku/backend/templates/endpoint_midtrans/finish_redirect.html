@@ -1,0 +1,26 @@
+{% extends "frontend_full_learnup//base.html" %}
+{% block title %}
+  <title>Finish Payment</title>
+{% endblock title %}
+
+{% block content %}
+<div class="container" style="margin-bottom: 300px;">
+  {% if transaction_status == "settlement" %}
+  <div class="alert alert-success text-center" role="alert" style="margin-top: 50px">
+    <h4 style="color: rgb(0, 102, 255);">TRANSAKSI BERHASIL !!!</h4><br>
+    <p>Selamat pembayaran Anda telah masuk ke sistem.<br> Untuk mengakses course yang ada silahkan <strong><a href="{% url 'course_student_list' %}">KLIK DI SINI</a></strong></p>
+  </div>
+  {% elif transaction_status == "pending" %}
+  <div class="alert alert-warning text-center" role="alert" style="margin-top: 50px">
+    <h4 style="color: rgb(0, 102, 255);">TRANSAKSI SEDANG DIPROSES !!!</h4><br>
+    <p>Pembayaran Anda telah masuk dan sedang diproses. Untuk mengakses halaman utama silahkan <strong><a href="{% url 'frontend_course' %}">KLIK DI SINI</a></strong></p>
+  </div>
+  {% else %}
+  <div class="alert alert-danger text-center" role="alert" style="margin-top: 50px">
+    <h4 style="color: rgb(0, 102, 255);">TRANSAKSI GAGAL !!!</h4><br>
+    <p>Pembayaran Anda tidak dapat diterima. Untuk mengakses halaman utama silahkan <strong><a href="{% url 'frontend_course' %}">KLIK DI SINI</a></strong></p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock content %}

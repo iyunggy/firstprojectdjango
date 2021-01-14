@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="I-GEN Courses Portal">
+  <title>I-GEN Course</title>
+  {% include "snippets/favicon.html" %}
+  {% include "snippets/style.html" %}
+
+  {% block style %}
+
+  {% endblock style %}
+
+  <style>
+    .button-num-nav {
+      background-color: #e7e7e7;
+      /* Gray */
+      border: none;
+      color: black;
+      /* padding: 1px 3px; */
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .button-num-nav2 {
+      background-color: #008CBA;
+      color: white;
+    }
+
+    /* Blue */
+    .button-num-nav3 {
+      background-color: #f44336;
+      color: white;
+    }
+
+    /* Red */
+    .button-num-nav4 {
+      background-color: #4CAF50;
+    }
+
+    /* Green */
+    .button-num-nav5 {
+      background-color: #555555;
+      color: white;
+    }
+
+    /* Black */
+  </style>
+
+  <style>
+  .container-frame {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding-top: 66.66%; /* 3:2 Aspect Ratio */
+  }
+
+  .responsive-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  </style>
+
+</head>
+
+<body class="compact-menu">
+  <main class="page-content content-wrap">
+    <!-- NAVBAR -->
+    {% include "snippets/navbar.html" %}
+    <!-- SIDEBAR -->
+    {% include "snippets/sidebar.html" with active_tab='tab1'  %}
+    <!-- CONTENT -->
+    <div class="page-inner">
+      <!-- BREADCRUMB -->
+      <div class="page-title">
+        <div class="page-breadcrumb">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <!-- timer question -->
+            <!-- <strong>
+              <p class="text-center" id="timer"></p>
+            </strong> -->
+
+            {% block breadcrumb_item %}
+
+            {% endblock breadcrumb_item %}
+
+          </ol>
+        </div>
+      </div>
+
+      <!-- ISI -->
+      <div id="main-wrapper">
+        <!-- <p class="text-center" id="timer"></p> -->
+        {% block content %}
+
+        {% endblock content %}
+      </div>
+      {% include "snippets/footer.html" %}
+    </div>
+  </main>
+  <div class="cd-overlay"></div>
+
+  {% include 'snippets/script.html' %}
+  {% block scripts %}
+  {% endblock scripts %}
+
+</body>
+<!-- timer -->
+<!-- <script>
+  var minutes = $('#menit').val()
+  var seconds = $('#detik').val()
+  // $('#timer').hide()
+  console.log('minutes', minutes)
+  console.log('detik', seconds)
+  var countDownDate = new Date(new Date().getTime() + (1000 * ((parseInt(minutes)*60) + parseInt(seconds))));
+  console.log('countDownDate', countDownDate)
+
+  // Update the count down every 1 second
+  var x = setInterval(function () {
+
+    // Get today's date and time
+    var now = new Date().getTime();
+    console.log('now', now)
+
+    // Find the distance between now and the count down date
+    var distance = countDownDate - now;
+
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Output the result in an element with id="demo"
+    document.getElementById("newtimer").innerHTML = minutes + "m " + seconds + "s ";
+    // $('#menit').val(minutes)
+    // $('#detik').val(seconds)
+    document.getElementById("updatemenit").value = minutes;
+    document.getElementById("updatedetik").value = seconds;
+
+    // If the count down is over, write some text
+    if (distance < 0) {
+      clearInterval(x);
+      $('#pertanyaan').hide()
+      window.location.href = "{% url 'selesai' %}";
+      // document.getElementById("newtimer").innerHTML = "EXPIRED. Klik selesai";
+    }
+  }, 1000);
+</script> -->
+
+<!-- datetimepicker -->
+<script>
+  $(function () {
+    $("#datetimepicker").datetimepicker({
+      format: 'Y-m-d H:i',
+    });
+  });
+  $(function () {
+    $("#datetimepicker1").datetimepicker({
+      format: 'Y-m-d H:i',
+    });
+  });
+</script>
+
+<!-- <script>
+  var email ="{{user.email}}"
+  // console.log(email)
+  fetch("http://127.0.0.1:8000/api/orderbyuser/"+email)
+  .then(response => response.json())
+  .then(data => {
+      // console.log('data order:', data);
+  });
+</script> -->
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+
+<!-- XDSoft DateTimePicker -->
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
+  integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
+  integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+
+</html>

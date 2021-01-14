@@ -1,0 +1,74 @@
+{% extends "dashboard/base.html" %}
+{% block breadcrumb_item %}
+<li><a href="{% url 'course_list' %}">List Course</a></li>
+<li> <a href="{% url 'topic_list' topic.course.slug  %}">List Topic</a></li>
+<li>Detail Topic</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading">
+        <h4 class="panel-title">Detail</h4>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Urutan Display</td>
+              <td>:</td>
+              <td>{{topic.urutan_display}}</td>
+            </tr>
+            <tr>
+              <td>Course</td>
+              <td>:</td>
+              <td>{{topic.course}}</td>
+            </tr>
+            <tr>
+              <td>Judul Topic</td>
+              <td>:</td>
+              <td>{{topic.judul}}</td>
+            </tr>
+            <tr>
+              <td>Keterangan</td>
+              <td>:</td>
+              <td>{{topic.keterangan|safe}}</td>
+            </tr>
+            {% if topic.bahan_upload %}
+            <tr>
+              <td>Bahan Upload</td>
+              <td>:</td>
+              <td>
+                <a href="{{topic.bahan_upload.url}}" target="_blank">{{topic.bahan_upload}}</a>
+              </td>
+            </tr>
+            {% endif %}
+            {% if topic.jadwal_meetup %}
+            <tr>
+              <td>Materi Ajar</td>
+              <td>:</td>
+              <td>{{topic.jadwal_meetup|safe}}</td>
+            </tr>
+            {% endif %}
+            <tr>
+              <td>Kode Quiz</td>
+              <td>:</td>
+              <td>{{topic.kode_quiz}}</td>
+            </tr>
+            <tr>
+              <td>Kode Assignment</td>
+              <td>:</td>
+              <td>{{topic.kode_assignment}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="panel-body">
+        <a type="button" class="btn btn-danger" href="{% url 'topic_list' topic.course.slug %}">
+          <i class="fa fa-reply"></i> Back</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

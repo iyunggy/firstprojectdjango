@@ -1,0 +1,216 @@
+<div class="page-sidebar sidebar">
+    <div class="page-sidebar-inner slimscroll">
+        <!-- ubah width css accordion menu -->
+        <ul class="menu accordion-menu">
+            <li class="{{ dashboard_active }}">
+                <a href="{% url 'dashboard' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-home"></span>
+                    <p>Dashboard </p><span class="{{ dashboard_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ order_active }}">
+                <a href="{% url 'order_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-briefcase"></span>
+                    <p>Orders</p><span class="{{ order_active_page }}"></span>
+                </a>
+            </li>
+            {% if user.status == "ADMIN" %}
+            <li class="{{ subscription_active }}">
+                <a href="{% url 'subscription_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-direction"></span>
+                    <p>Subscriptions</p><span class="{{ subscription_active_page }}"></span>
+                </a>
+            </li>
+            {% endif %}
+            <hr>
+            {% if user.status == "ADMIN" %}
+            <li class="{{ pengumuman_active }}">
+                <a href="{% url 'pengumuman_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-volume-2"></span>
+                    <p>Announcement </p><span class="{{ pengumuman_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ blast_email_active }}">
+                <a href="{% url 'blast_email' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-rocket"></span>
+                    <p>Blast Email </p><span class="{{ blast_email_active_page }}"></span>
+                </a>
+            </li>
+            <hr>
+            {% endif %}
+            {% if user.status == "ADMIN" %}
+            <li class="{{ kelas_active }}">
+                <a href="{% url 'kelas_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-user-follow"></span>
+                    <p>Ruang Kelas </p><span class="{{ kelas_active_page }}"></span>
+                </a>
+            </li>
+            <hr>
+            <li class="{{ user_active }}">
+                <a href="{% url 'user_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-user-follow"></span>
+                    <p>Users </p><span class="{{ user_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ custom_user_active }}">
+                <a href="{% url 'custom_user_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-users"></span>
+                    <p>Pendaftaran </p><span class="{{ custom_user_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ komisi_rate_active }}">
+                <a href="{% url 'komisi_rate_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-diamond"></span>
+                    <p>Komisi Rate </p><span class="{{ komisi_rate_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ pembayaran_komisi_active }}">
+                <a href="{% url 'pembayaran_komisi_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-paper-plane"></span>
+                    <p>Pembayaran Komisi </p><span class="{{ pembayaran_komisi_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ marketing_squard_active }}">
+                <a href="{% url 'marketing_squard_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-badge"></span>
+                    <p>List Marketing Squad </p><span class="{{ marketing_squard_active_page }}"></span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% if user.is_marketing_squard == True %}
+            <li class="{{ marketing_squard_profile_active }}">
+                <a href="{% url 'marketing_squard_profile' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-emoticon-smile"></span>
+                    <p>Marketing Squad Profile</p><span class="{{ marketing_squard_profile_active_page }}"></span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+            <hr>
+            <li class="{{ course_active }}">
+                <a href="{% url 'course_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-doc"></span>
+                    <p>Manage Courses </p><span class="{{ course_active_page }}"></span>
+                </a>
+            </li>
+            
+            <li class="{{ ujian_active }}">
+                <a href="{% url 'kelompok_ujian_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-notebook"></span>
+                    <p>Manage Quiz </p><span class="{{ ujian_active_page }}"></span>
+                </a>
+            </li>
+            {% endif %}
+            {% if user.status == "ADMIN" %}
+            <li class="{{ voucher_active }}">
+                <a href="{% url 'voucher_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-doc"></span>
+                    <p>Manage Voucher </p><span class="{{ voucher_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ potongan_harga_active }}">
+                <a href="{% url 'voucher_potongan_harga_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-doc"></span>
+                    <p>Voucher Bundling </p><span class="{{ potongan_harga_active_page }}"></span>
+                </a>
+            </li>
+            <hr>
+            {% endif %}
+            
+            <li class="{{ bahankuliah_active }}">
+                <a href="{% url 'course_student_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-note"></span>
+                    <p>My Material </p><span class="{{ bahankuliah_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ speaking_active }}">
+                <a href="{% url 'speaking_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-note"></span>
+                    <p>Submission </p><span class="{{ speaking_active_page }}"></span>
+                </a>
+            </li>
+            
+            {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+            <li class="{{ result_speaking_clinic_active }}">
+                <a href="{% url 'result_speaking_clinic_list' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-notebook"></span>
+                    <p>Result Speaking Clinic </p><span class="{{ result_speaking_clinic_active_page }}"></span>
+                </a>
+            </li>
+            {% endif %}
+                
+            <li class="{{ start_active }}">
+                <a href="{% url 'check_kode' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-note"></span>
+                    <p>Quiz </p><span class="{{ start_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ result_active }}">
+                <a href="{% url 'result' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-eye"></span>
+                    <p>Report </p><span class="{{ result_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ nilai_psikologi_active }}">
+                <a href="{% url 'report_psikologi' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-eye"></span>
+                    <p>Report Psikologi </p><span class="{{ nilai_psikologi_active_page }}"></span>
+                </a>
+            </li>
+            <hr>
+            {% if user.status == "ADMIN" or user.status == "MANAGER"  %}
+            <li class="{{ statistik_active }}">
+                <a href="{% url 'statistic' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-notebook"></span>
+                    <p>Statistik </p><span class="{{ statistik_active_page }}"></span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% if user.status == "ADMIN" %}
+            <li class="{{ order_statistik_active }}">
+                <a href="{% url 'order_statistic' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-bar-chart"></span>
+                    <p>Statistik Order </p><span class="{{ order_statistik_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ omset_statistik_active }}">
+                <a href="{% url 'omset_statistic' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-bar-chart"></span>
+                    <p>Statistik Omset </p><span class="{{ omset_statistik_active_page }}"></span>
+                </a>
+            </li>
+            <li class="{{ user_statistik_active }}">
+                <a href="{% url 'user_statistic' %}" class="waves-effect waves-button">
+                    <span class="menu-icon icon-bar-chart"></span>
+                    <p>Statistik User </p><span class="{{ user_statistik_active_page }}"></span>
+                </a>
+            </li>
+            {% endif %}
+                
+            <li class=" droplink {{ profile_active_open }}">
+                <a href="#" class="waves-effect waves-button">
+                    <span class="menu-icon icon-user"></span>
+                    <p>Profile</p><span class="arrow"></span><span class="{{ profile_active_page }}"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="{{ detail_profile_active }}">
+                        <a href="{% url 'profile_user' %}">Detail Profile</a>
+                    </li>
+                    <li class="{{ change_profile_active }}">
+                        <a href="{% url 'change_profile' user.id %}">Change Profile</a>
+                    </li>
+                    <li class="{{ change_password_active }}">
+                        <a href="{% url 'password_change' %}">Change Password</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'reset_password' %}">Forgot Password</a>
+                    </li>
+                    <li><a href="{% url 'logout_user' %}">Log Out</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

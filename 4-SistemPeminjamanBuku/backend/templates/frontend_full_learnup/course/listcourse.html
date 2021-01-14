@@ -1,0 +1,324 @@
+{% extends "frontend_full_learnup/base.html" %}
+{% load humanize %}
+
+{% block content %}
+	<!-- ============================ Page Title Start================================== -->
+  <section class="page-title">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 col-md-12">
+          
+          <div class="breadcrumbs-wrap">
+            <h1 class="breadcrumb-title">
+              {% if category %}
+              {{category}} Courses
+              {% else %}
+              All Courses
+              {% endif %}
+            </h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Find Courses</li>
+              </ol>
+            </nav>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ============================ Page Title End ================================== -->			
+
+  
+  <!-- ============================ Find Courses with Sidebar ================================== -->
+  <section class="pt-0">
+    <div class="container">
+      
+      <!-- Onclick Sidebar -->
+      <div class="row">
+        <div class="col-md-12 col-lg-12">
+          <div id="filter-sidebar" class="filter-sidebar">
+            <div class="filt-head">
+              <h4 class="filt-first">Advance Options</h4>
+              <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">Close <i class="ti-close"></i></a>
+            </div>
+            <div class="show-hide-sidebar">
+              
+              <!-- Find New Property -->
+              <div class="sidebar-widgets">
+                
+                <!-- Search Form -->
+            {% include "frontend_full_learnup/page/search_course.html" %}
+            
+            <h4 class="side_title">Course categories</h4>
+            <ul class="no-ul-list mb-3">
+              <li class="checkbox-custom-label">
+                <a href="{% url 'frontend_course' %}">All</a>
+              </li>
+              <br>
+              {% for x  in category_course %}
+              <li class="checkbox-custom-label">
+                <a href="{% url 'frontend_course_by_category' x %}">{{x}}</a>
+              </li> 
+              <br>
+              {% endfor %}
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row -->
+      <div class="row">
+      
+        <div class="col-lg-4 col-md-12 col-sm-12 order-2 order-lg-1 order-md-2">							
+          <div class="page_sidebar hide-23">
+            
+            <!-- Search Form -->
+            {% include "frontend_full_learnup/page/search_course.html" %}
+            
+            <h4 class="side_title">Course categories</h4>
+            <ul class="no-ul-list mb-3">
+              <li class="checkbox-custom-label">
+                <a href="{% url 'frontend_course' %}">All</a>
+              </li>
+              <br>
+              {% for x  in category_course %}
+              <li class="checkbox-custom-label">
+                <a href="{% url 'frontend_course_by_category' x %}">{{x}}</a>
+              </li> 
+              <br>
+              {% endfor %}
+            </ul>
+            
+          </div>
+          
+        </div>	
+        
+        <div class="col-lg-8 col-md-12 col-sm-12 order-1 order-lg-2 order-md-1">
+          
+          <!-- Row -->
+          <div class="row align-items-center mb-3">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              We found <strong>{{courses_count}} </strong> courses for you
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 ordering">
+              <div class="filter_wraps">
+                <div class="dn db-991 mt30 mb0 show-23">
+                  <div id="main2">
+                    <a href="javascript:void(0)" class="btn btn-theme arrow-btn filter_open" onclick="openNav()" id="open2">Show Filter<span><i class="fas fa-arrow-alt-circle-right"></i></span></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /Row -->
+          
+          <div class="row">
+        
+            {% for course in courses %}
+              <!-- Cource Grid 1 -->
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="education_block_grid style_2">
+                
+                {% if course.is_preview_only  %}
+                <!-- 1. kondisi jika preview only -->
+                <div class="education_block_thumb n-shadow is_preview_only">
+                  <a href="{% url 'front_end_course_detail' course.id %}" class="disabled">
+                    {% if course.image %}
+                    <img src="{{course.image.url}}" class="img-fluid" alt="" >
+                    {% endif %}
+                  </a>
+                </div>
+                
+                <div class="education_block_body is_preview_only">
+                  <h4 class="bl-title"><a href="{% url 'front_end_course_detail' course.id %}" class="disabled">{{course.judul}}</a></h4>
+                </div>
+                
+                <div class="cources_info_style3 is_preview_only">
+                    <p><i class="ti-time mr-2"></i>Valid thru: {{course.tanggal_mulai}} - {{course.tanggal_akhir}}</p>
+                </div>
+                
+                <div class="education_block_footer">
+                  
+                  {% if course.category_course == "Foreign Language" %}
+                  <div class="education_block_author is_preview_only">
+                    <h5>
+                      <a href="{% url 'front_end_course_detail' course.id %}" class="disabled">
+                        COMING SOON
+                      </a>
+                    </h5>
+                  </div>
+                  <div class="foot_lecture" style="color: #21b17c; background-color: rgba(33, 177, 124, 0.13);">{{course.category_course}}</div>
+                  {% else %}
+                  <div class="education_block_author is_preview_only">
+                    <h5>
+                      <a href="{% url 'front_end_course_detail' course.id %}" class="disabled">
+                        COMING SOON
+                      </a>
+                    </h5>
+                  </div>
+                  <div class="foot_lecture" style="color: #ff7600; background-color: rgba(255, 118, 0, 0.13);">{{course.category_course}}</div>
+                  {% endif %}
+                </div>
+
+                {% else %}
+
+                <!-- 2. kondisi jika ga preview only -->
+                
+                  {% if course.tanggal_mulai <= today and course.tanggal_akhir >= today %}
+                    <!-- 2.a. kondisi jika range kelas masih available -->
+                    <div class="education_block_thumb n-shadow">
+                      <a href="{% url 'front_end_course_detail' course.id %}">
+                        {% if course.image %}
+                        <img src="{{course.image.url}}" class="img-fluid" alt="">
+                        {% endif %}
+                      </a>
+                    </div>
+                    
+                    <div class="education_block_body">
+                      <h4 class="bl-title"><a href="{% url 'front_end_course_detail' course.id %}">{{course.judul}}</a></h4>
+                    </div>
+                    
+                    <div class="cources_info_style3">
+                        <p><i class="ti-time mr-2"></i>Valid thru: {{course.tanggal_mulai}} - {{course.tanggal_akhir}}</p>
+                    </div>
+                    
+                    <div class="education_block_footer">
+                      <div class="education_block_author">
+                        <h5>
+                          <a href="{% url 'front_end_course_detail' course.id %}">Rp{{course.harga_course|intcomma}}</a>
+                        </h5>
+                      </div>
+                      {% if course.category_course == "Foreign Language" %}
+                      <div class="foot_lecture" style="color: #21b17c; background-color: rgba(33, 177, 124, 0.13);">{{course.category_course}}</div>
+                      {% else %}
+                      <div class="foot_lecture" style="color: #ff7600; background-color: rgba(255, 118, 0, 0.13);">{{course.category_course}}</div>
+                      {% endif %}
+                    </div>
+                    
+                    {% else %}
+                    <!-- 2.b. kondisi jika kelas sudah kadaluwarsa -->
+                    <div class="education_block_thumb n-shadow is_preview_only">
+                      <a href="{% url 'front_end_course_detail' course.id %}" class="disabled">
+                        {% if course.image %}
+                        <img src="{{course.image.url}}" class="img-fluid" alt="" >
+                        {% endif %}                          
+                      </a>
+                    </div>
+                    
+                    <div class="education_block_body is_preview_only">
+                      <h4 class="bl-title"><a href="{% url 'front_end_course_detail' course.id %}" class="disabled">{{course.judul}}</a></h4>
+                    </div>
+                    
+                    <div class="cources_info_style3 is_preview_only">
+                        <p><i class="ti-time mr-2"></i>Valid thru: {{course.tanggal_mulai}} - {{course.tanggal_akhir}}</p>
+                    </div>
+                    
+                    <div class="education_block_footer">
+                      
+                      {% if course.category_course == "Foreign Language" %}
+                      <div class="education_block_author is_preview_only">
+                        <h5>
+                          <a href="{% url 'front_end_course_detail' course.id %}" class="disabled">
+                            Closed
+                          </a>
+                        </h5>
+                      </div>
+                      <div class="foot_lecture" style="color: #21b17c; background-color: rgba(33, 177, 124, 0.13);">{{course.category_course}}</div>
+                      {% else %}
+                      <div class="education_block_author is_preview_only">
+                        <h5>
+                          <a href="{% url 'front_end_course_detail' course.id %}" class="disabled">
+                            Closed
+                          </a>
+                        </h5>
+                      </div>
+                      <div class="foot_lecture" style="color: #ff7600; background-color: rgba(255, 118, 0, 0.13);">{{course.category_course}}</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                    
+                {% endif %}
+                  
+              </div>	
+            </div>
+            {% endfor %}
+            
+          </div>
+          
+          <!-- Row -->
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+
+              <!-- combining filtering and pagination -->
+              {% load my_tags %} <!-- load from templatetags  -->
+              <!-- Pagination -->
+              <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <ul class="pagination p-center">
+                    {% if page_obj.has_previous %}
+                      <li class="page-item">
+                          <a class="page-link" href="?{% param_replace page=page_obj.previous_page_number %}">&laquo;</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled">
+                          <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo;</a>
+                      </li>
+                    {% endif %}
+                
+                    {% for page in paginator.page_range %}
+                      {% if page is page_obj.number %}
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link" href="#">{{page}}<span class="sr-only">(current)</span></span>
+                        </li>
+                      {% else %}
+                        {% if page <= page_obj.number|add:1 and page >= page_obj.number|add:-1 %}
+                          <li class="page-item">
+                              <a class="page-link" href="?{% param_replace page=page %}">{{page}}</a>
+                          </li>
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                
+                    {% if page_obj.has_next %}
+                      <li class="page-item">
+                          <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled">
+                          <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&raquo;</a>
+                      </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          <!-- /Row -->
+          
+        </div>
+      
+      </div>
+      <!-- Row -->
+      
+    </div>
+  </section>
+  <!-- ============================ Find Courses with Sidebar End ================================== -->
+  
+{% endblock content %}
+
+{% block scripts %}
+<script>
+  function openNav() {
+    document.getElementById("filter-sidebar").style.width = "320px";
+  }
+
+  function closeNav() {
+    document.getElementById("filter-sidebar").style.width = "0";
+  }
+</script>
+{% endblock scripts %}

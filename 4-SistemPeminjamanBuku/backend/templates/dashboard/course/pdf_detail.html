@@ -1,0 +1,36 @@
+{% extends "dashboard/base.html" %}
+{% block breadcrumb_item %}
+<li> <a href="{% url 'dashboard'  %}">Course</a></li>
+<li>Detail Material</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <!-- page untuk admin -->
+
+      <div class="panel-body">
+        {{topic.judul}}<br><br>
+        <p><i>Refresh page Anda apabila dokumen tidak terlihat</i></p>
+        <div class="container-frame">
+          <iframe class="responsive-iframe" src="https://docs.google.com/viewer?embedded=true&url=https://educourse.i-gen.co.id{{topic.bahan_upload.url}}#toolbar=0" frameborder="0" scrolling="no" seamless="" allowfullscreen="allowfullscreen"></iframe>
+        </div>
+        <!-- <iframe id="framepdf" frameborder="1" src="{{topic.bahan_upload.url}}#toolbar=0&navpanes=0" width="1000" height="750"></iframe> -->
+        <div id="block" style="position: absolute; top: 0; left: 0; width: 99%; height: 50%"></div>
+      </div>
+      <!-- <div class="panel-body">
+        <a type="button" class="btn btn-danger" href="{% url 'course_student_detail' topic.id %}"><i class="fa fa-reply"></i> Back</a>
+      </div> -->
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript">
+  document.oncontextmenu = function() {
+    return false;
+  };
+</script>
+{% endblock scripts%}

@@ -1,0 +1,136 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li><a href="{% url 'report_psikologi' %}">List Report Psikologi</a></li>
+<li>Detail Report Psikologi</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <th>Kode Ujian</th>
+              <th>User</th>
+              <th>Category</th>
+              {% if getanswer.ujian.kode == "TP01" %}
+                <!-- TEST GAYA HIDUP -->
+                <th>Visual</th>
+                <th>Auditorial</th>
+                <th>Kinestetik</th>
+                <th>Keterangan</th>
+              {% elif getanswer.ujian.kode == "TP02" %}
+                <!-- TEST OTAK KANAN KIRI -->
+                <th>Otak Kanan</th>
+                <th>Otak Kiri</th>
+                <th>Keterangan</th>
+              {% elif getanswer.ujian.kode == "BM001" %}
+                <!-- TEST MINAT BAKAT -->
+                <th>Total Yes</th>
+              {% endif %}
+            </thead>
+            <tbody>
+              {% for list in nilai_psikologi %}
+              <tr>
+                <td>{{list.kodeujian}}</td>
+                <td>{{list.user.fullname}} / {{list.user.email}}</td>
+                <td>{{list.category}}</td>
+                {% if getanswer.ujian.kode == "TP01" %}
+                  <!-- TEST GAYA HIDUP -->
+                  <td>{{list.total_jawab_A}}</td>
+                  <td>{{list.total_jawab_B}}</td>
+                  <td>{{list.total_jawab_C}}</td>
+                  <td id="keterangan">
+                    {% if list.total_jawab_A > list.total_jawab_B and list.total_jawab_A >  list.total_jawab_C %}
+                      Visual
+                    {% elif list.total_jawab_B > list.total_jawab_A and list.total_jawab_B > list.total_jawab_C %}
+                      Auditorial
+                    {% elif list.total_jawab_C > list.total_jawab_A and list.total_jawab_C > list.total_jawab_B %}
+                      Kinestetik
+                    {% elif list.total_jawab_A > list.total_jawab_B and list.total_jawab_A ==  list.total_jawab_C %}
+                      Visual, Kinestetik
+                    {% elif list.total_jawab_B > list.total_jawab_A and list.total_jawab_B == list.total_jawab_C %}
+                      Auditorial, Kinestetik
+                    {% elif list.total_jawab_A > list.total_jawab_C and list.total_jawab_A ==  list.total_jawab_B %}
+                      Visual, Auditorial
+                    {% else %}
+                      Visual, Auditorial, Kinestik
+                    {% endif %}
+                  </td>
+                {% elif getanswer.ujian.kode == "TP02" %}
+                  <!-- TEST OTAK KANAN KIRI -->
+                  <td>{{list.total_jawab_A}}</td>
+                  <td>{{list.total_jawab_B}}</td>
+                  <td>
+                    {% if list.total_jawab_A > list.total_jawab_B %}
+                      Otak Kanan
+                    {% elif list.total_jawab_A < list.total_jawab_B %}
+                      Otak Kiri
+                    {% else %}
+                      Otak Kanan dan Kiri
+                    {% endif %}
+                  {% elif getanswer.ujian.kode == "BM001" %}
+                    <!-- TEST OTAK KANAN KIRI -->
+                    <td>{{list.total_jawab_A}}</td>
+                  </td>
+                  
+                {% endif %}
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="6" align="center" style="color: red;">No data</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <br><br>
+          {% if getanswer.ujian.kode == "TP01" %}
+            <!-- TEST GAYA HIDUP -->
+            <p>Kamu bisa mengambil 1 nilai tertinggi sebagai referensi bahan gaya belajar kamu</p>
+            <br>
+            <p><u><strong>Test psikologi gaya belajar:</strong></u></p>
+            <ol>
+              <li>Visual : menyerap informasi dengan cara melihat sesuatu, belajar dengan cara mengamati dan menggambarkan.</li>
+              <li>Auditorial : menyerap informasi melalui indera pendengaran, belajar dengan berbicara dan mendengarkan.</li>
+              <li>Kinestetik : menyerap informasi melalui indera peraba / perasa, belajar dengan aktifitas fisik atau praktek langsung.</li>
+            </ol>
+          {% elif getanswer.ujian.kode == "TP02" %}
+            <!-- TEST OTAK KANAN KIRI -->
+            <p>Kamu bisa mengambil 1 nilai tertinggi sebagai referensi bahan dominasi kerja otak kamu</p>
+            <br>
+            <p><u><strong>Test psikologi otak kanan kiri:</strong></u></p>
+            <ol>
+              <li>Otak kiri (IQ) : memproses informasi secara linear, mengidentifikasi rincian penting, analistis, menyelesaikan pekerjaan secara berurutan, sistematis, matematis, penuh perhitungan, kaku, menggunakan logika untuk menyelesaikan masalah.</li>
+              <li>Otak kanan (EQ) : memproses informasi secara holistik (menyeluruh), melihat hasil akhir dengan kejelasan, kreatif, imajinasi, inovatif, menyelesaikan pekerjaan secara acak, fleksibel, konseptual, menggunakan intuisi untuk menyelesaikan masalah.</li>
+            </ol>
+          {% elif getanswer.ujian.kode == "BM001" %}
+            <!-- TEST MINAT BAKAT -->
+            <p>Kamu bisa mengambil 2 nilai tertinggi sebagai referensi bahan minat bakat kamu</p>
+            <br>
+            <p><u><strong>Test psikologi Minat Bakat:</strong></u></p>
+            <ol>
+              <li>Bidang Enterprising : Menyenangi aktivitas yang berhubungan dengan orang lain dalam usahanya mencapai keuntungan ekonomi. Memiliki kompetensi bidang persuatif, verbal yang baik dan mengatur orang lain. Misalnya Manager, Sales, Marketing, Wirausaha, Bisnis.</li>
+              <li>Bidang Investigatif :Memilih kegiatan yang berorientasi keilmuan, penyelidikan yang observasional, ilmiah, lebih suka bekerja sendiri. Misalnya: Peneliti, Reserse, Ahli Astronomi, Ahli Kimia, Ahli Matematika, Dokter Gigi.</li>
+              <li>Bidang Artistik : Memilih kegiatan yang bebas, tidak sistematis, ambisius dalam mencapai tujian produk yang memiliki nilai seni. Memiliki kompetensi seni. Misalnya Seniman, Penyiar Radio, Presenter, Musikus, Penulis, Sutradara.</li>
+              <li>Bidang Sosial : Menyenangi aktivitas yang berhubungan dengan orang lain, kemampuan verbal baik. Memiliki kompetensi bidang relasi dan bicara dengan orang lain. Misalnya : Guru, Pekerja  Sosial, Konselor, Perawat, Aktifis.</li>
+              <li>Bidang Realistik : Memilih kegiatan dengan kongkrit, jelas, cenderung mekanis seperti menggunakan mesin atau peralatan tangan. Memiliki kompetensi di bidang mekanik, pertanian, elektrik atau kerajinan tangan. Misalnya : Teknologi (IT), Arsitek, Engineer, Pertanian, Atlet,  Kerajinan Tangan.</li>
+              <li>Bidang Konvensional : Memilih kegiatan yang teratur, rapi, terstruktur seperti mengarsipkan sesuatu, mencatat dan mengolah data. Memiliki kompetensi di bidang klerikal dan menghitung. Misalnya : Administrasi, Sekretaris, Akuntansi, Auditor, Manajemen.</li>
+            </ol>
+          {% endif %}
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="panel-body">
+        <!-- {{request.META.HTTP_REFERER}} -->
+        <!-- <a type="button" class="btn btn-danger" href="{% url 'report_psikologi' %}"><i class="fa fa-reply"></i> Back</a>  -->
+        <a type="button" class="btn btn-danger" href="{{request.META.HTTP_REFERER}}"><i class="fa fa-reply"></i> Back</a> 
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

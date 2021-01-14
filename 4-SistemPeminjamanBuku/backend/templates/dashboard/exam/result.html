@@ -1,0 +1,126 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<!-- <div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <h2 class="text-center">CEK HASIL UJIAN</h2>
+        <hr><br>
+        <form action="{% url 'result' %}" method='post' class="col-8">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="formGroupExampleInput">Kode Quiz</label>
+            <input type="text" class="form-control" name="kode_ujian" placeholder="Masukan kode ujian">
+          </div>
+          <button type="submit" class="btn btn-primary">CEK HASIL SEKARANG</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+      <div class="panel-body">
+        {% if user.status == "ADMIN" %}
+        <div class="col-md-2">
+          <select  class="form-control" id="mySelect" onchange="myFunction()" >
+            <option  value="" selected="selected">-Select Sub. Quiz-</option>
+            {% for list in kodeujian %}
+              <option value="{{list}}">{{list}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-4">
+          <a href="{% url 'export_users_xls' %}" class="btn btn-primary">Download all Report</a>
+        </div>
+        {% endif %}
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'result' %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div>
+      {% endif %}
+      <div class="panel-body">
+        <h2 style="text-align: center;"> List Ujian Yang Sudah Diikuti</h2>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <th style="width: 20%;">Tanggal</th>
+              {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+                <th style="width: 30%;">User</th>
+              {% endif %}
+              <th style="width: 80px;">Kode Quiz</th>
+              <th style="width: 80px;">Sub. Quiz</th>
+              <th style="width: 30%;">Nama Ujian</th>
+              <th style="width: 20%;">Nilai</th>
+            </thead>
+            <tbody>
+              {% for list in nilaiujian %}
+              <tr>
+                <td>{{list.created_on}}</td>
+                {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+                  <td>{{list.user.fullname}} </td>
+                {% endif %}
+                <td>{{list.kode_ujian.kelompok_ujian.kode_kelompok}} </td>
+                <td>{{list.kodeujian}}</td>
+                <td>{{list.namaujian}}</td>
+                <td>{{list.nilai}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <!-- <ul class="pagination justify-content-center">
+            <li class="page-item">
+                {% if page_obj.has_previous %}
+                    <a class="page-link" href="?page=1">&laquo; first</a>
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </li>
+          </ul> -->
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script type="text/javascript">
+  function myFunction() {
+    var x = document.getElementById("mySelect").value;
+    // console.log(x)
+    var url = "{% url 'export_users_xls' %}";
+    var form = $('<form action="' + url + '" method="GET">' + 
+      '{% csrf_token %}' +
+      '<input type="hidden" name="kodeujian" value="' + x + '" />' +
+      '</form>');
+    $('body').append(form);
+    form.submit();
+  }
+</script>
+{% endblock scripts %}

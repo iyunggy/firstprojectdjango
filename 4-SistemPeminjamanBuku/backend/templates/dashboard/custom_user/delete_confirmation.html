@@ -1,0 +1,85 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>  <a href="{% url 'custom_user_list' %}">List Pendaftaran</a></li>
+<li>Detail Pendafataran</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" %}
+      <!-- page untuk admin -->
+      <div class="panel-heading">
+        <h4 class="panel-title">Detail</h4>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Email</td>
+              <td>:</td>
+              <td> {{customuser.email}}</td>
+            </tr>
+            <tr>
+              <td>Full Name</td>
+              <td>:</td>
+              <td> {{customuser.fullname}}</td>
+            </tr>
+            <tr>
+              <td>Phone</td>
+              <td>:</td>
+              <td> {{customuser.phone}}</td>
+            </tr>
+            <tr>
+              <td>Tanggal Lahir</td>
+              <td>:</td>
+              <td>
+                {% if customuser.tanggal_lahir %}
+                  {{customuser.tanggal_lahir|date:'Y-m-d'}} <strong>(YYYY-MM-DD)</strong>
+                  {% else %}
+                  -
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Status</td>
+              <td>:</td>
+              <td>{{customuser.status}}</td>
+            </tr>
+            {% if customuser.institusi %}
+              <tr>
+                <td>Institusi</td>
+                <td>:</td>
+                <td>{{customuser.institusi}}</td>
+              </tr>
+            {% endif %}
+            {% if customuser.domisili %}
+              <tr>
+                <td>Domisili</td>
+                <td>:</td>
+                <td>{{customuser.domisili}}</td>
+              </tr>
+            {% endif %}
+          </table>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary"> Ok</button>
+          <a type="button" class="btn btn-danger" href="{% url 'custom_user_list' %}"><i class="fa fa-reply"></i>
+            Back</a>
+        </form>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

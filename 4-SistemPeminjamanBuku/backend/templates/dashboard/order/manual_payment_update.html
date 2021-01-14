@@ -1,0 +1,36 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li><a href="{% url 'order_list'  %}">List Order</a></li>
+<li>Update Order</li>
+{% endblock breadcrumb_item %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" %}
+      <!-- page untuk admin -->
+      <div class="panel-body">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{form.media}}
+          {{form.as_p}}
+          <h3>Jika Anda menekan tombol Update berarti pembayaran order ini terverifikasi dan sudah lunas maka akan otomatis mensubscribe course yang dipilih.</h3>
+          <h3>Apakah Anda yakin ingin verifikasi pembayaran order ini ?</h3>
+          <br><br>
+          <a class="btn btn-danger" href="{{request.META.HTTP_REFERER}}"><i class="fa fa-reply m-r-xs"></i>Cancel</a>
+          <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
+        </form>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

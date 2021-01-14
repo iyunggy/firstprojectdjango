@@ -1,0 +1,24 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li><a href="{% url 'speaking_list' %}">List Speaking Submission</a></li>
+<li>Update Speaking Submission</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{form.media}}
+          {{form.as_p}}
+          <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
+          <a type="button" class="btn btn-danger" href="{{request.META.HTTP_REFERER}}"><i class=" fa fa-reply"></i> Back</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

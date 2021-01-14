@@ -1,0 +1,241 @@
+{% extends "dashboard/base.html" %}
+{% block breadcrumb_item %}
+<li> <a href="{% url 'kelompok_ujian_list'  %}">List Kelompok Ujian</a></li>
+<li><a href="{% url 'ujian_list' question.kode_ujian.kelompok_ujian.slug %}">List Ujian</a></li>
+<li><a href="{% url 'soal_list' question.kode_ujian.slug %}">List Soal</a></li>
+<li>Detail Soal</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+      <!-- page untuk admin -->
+      <div class="panel-heading">
+        <h4 class="panel-title">Detail</h4>
+      </div>
+      {% if  question.type_soal == "SINGLE SELECTION" %}
+      {% if question.jawaban_benar_2 or question.jawaban_benar_3 or question.jawaban_benar_4 or question.jawaban_benar_5 or question.jawaban_benar_6 or jawaban_benar_image_2 or jawaban_benar_image_3 or jawaban_benar_image_4 or jawaban_benar_image_5 or jawaban_benar_image_6 %}
+      <div class="panel-body">
+        <div class="col-md-6 col-md-offset-3">
+          <div class="alert alert-danger text-center">
+            <strong>TYPE SOAL TIDAK SESUAI DENGAN BANYAK JAWABAN BENAR
+              <br>SILAKAN UPDATE SOAL INI
+            </strong>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Kelompok Ujian</td>
+              <td>:</td>
+              <td>{{question.kode_ujian.kelompok_ujian}}</td>
+            </tr>
+            <tr>
+              <td>Kode Ujian</td>
+              <td>:</td>
+              <td> {{question.kode_ujian}}</td>
+            </tr>
+            <tr>
+              <td>Jumlah Jawaban</td>
+              <td>:</td>
+              <td>{{question.panjang_jawaban}}</td>
+            </tr>
+            <tr>
+              <td>Pilihan Jawaban</td>
+              <td>:</td>
+              <td>
+                {% if question.pilihan_jawaban == "TEXT"  %}
+                <button class="btn btn-info btn-rounded" disabled="disabled">{{question.pilihan_jawaban}}</button>
+                {% else %}
+                <button class="btn btn-danger btn-rounded" disabled="disabled">{{question.pilihan_jawaban}}</button>
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Type Soal</td>
+              <td>:</td>
+              <td>
+                {% if question.type_soal == "SINGLE SELECTION"  %}
+                <button class="btn btn-success btn-rounded" disabled="disabled">{{question.type_soal}}</button>
+                {% else %}
+                <button class="btn btn-warning btn-rounded" disabled="disabled">{{question.type_soal}}</button>
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Nomor Soal</td>
+              <td>:</td>
+              <td> {{question.nomor}}</td>
+            </tr>
+            <tr>
+              <td>Pertanyaan</td>
+              <td>:</td>
+              <td> {{question.pertanyaan|safe}}</td>
+            </tr>
+            {% if question.attach_mp3 %}
+            <tr>
+              <td>Attachment MP3</td>
+              <td>:</td>
+              <td>
+                <audio autoplay controls>
+                  <source src="{{ question.attach_mp3.url}}" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+            {% endif %}
+            <tr>
+              <td>Opsi Jawaban</td>
+              <td>:</td>
+              {% if question.pilihan_jawaban == "TEXT" %}
+              <td>
+                {% if question.A %}
+                <strong>A.</strong> {{question.A}} <br>
+                {% endif %}
+                {% if question.B %}
+                <strong>B.</strong> {{question.B}} <br>
+                {% endif %}
+                {% if question.C %}
+                <strong>C.</strong> {{question.C}} <br>
+                {% endif %}
+                {% if question.D %}
+                <strong>D.</strong> {{question.D}} <br>
+                {% endif %}
+                {% if question.E %}
+                <strong>E.</strong> {{question.E}} <br>
+                {% endif %}
+                {% if question.F %}
+                <strong>F.</strong> {{question.F}} <br>
+                {% endif %}
+              </td>
+              {% else %} <!-- PILIHAN JAWABAN IMAGE -->
+              <td>
+                {% if question.A_image %}
+                <strong>A_image.</strong> <img src="{{question.A_image.url}}" alt=""> <br>
+                {% endif %}
+                {% if question.B_image %}
+                <strong>B_image.</strong> <img src="{{question.B_image.url}}" alt=""> <br>
+                {% endif %}
+                {% if question.C_image %}
+                <strong>C_image.</strong> <img src="{{question.C_image.url}}" alt=""> <br>
+                {% endif %}
+                {% if question.D_image %}
+                <strong>D_image.</strong> <img src="{{question.D_image.url}}" alt=""> <br>
+                {% endif %}
+                {% if question.E_image %}
+                <strong>E_image.</strong> <img src="{{question.E_image.url}}" alt=""> <br>
+                {% endif %}
+                {% if question.F_image %}
+                <strong>F_image.</strong> <img src="{{question.F_image.url}}" alt=""> <br>
+                {% endif %}
+              </td>
+              {% endif %}
+            </tr>
+            {% if question.jawaban_benar_1 %}
+            <tr>
+              <td>Jawaban Benar 1</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_1}}</strong></td>
+            </tr>
+            {% endif %}
+            {% if question.jawaban_benar_2 %}
+            <tr>
+              <td>Jawaban Benar 2</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_2}}</strong></td>
+            </tr>
+            {% endif %}
+            {% if question.jawaban_benar_3 %}
+            <tr>
+              <td>Jawaban Benar 3</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_3}}</strong></td>
+            </tr>
+            {% endif %}
+            {% if question.jawaban_benar_4 %}
+            <tr>
+              <td>Jawaban Benar 4</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_4}}</strong></td>
+            </tr>
+            {% endif %}
+            {% if question.jawaban_benar_5 %}
+            <tr>
+              <td>Jawaban Benar 5</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_5}}</strong></td>
+            </tr>
+            {% endif %}
+            {% if question.jawaban_benar_6 %}
+            <tr>
+              <td>Jawaban Benar 6</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_6}}</strong></td>
+            </tr>
+            {% endif %}
+            <!-- jawaban image -->
+            {% if question.jawaban_benar_image_1 %}
+            <tr>
+              <td>Jawaban Benar 1</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_image_1}}</strong></td>
+            </tr>
+            {% endif %}
+            {% if question.jawaban_benar_image_2 %}
+            <tr>
+              <td>Jawaban Benar 2</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_image_2}}</strong></td>
+            </tr>
+            {% endif %}
+            {% if question.jawaban_benar_image_3 %}
+            <tr>
+              <td>Jawaban Benar 3</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_image_3}}</strong></td>
+            </tr>
+            {% endif %}
+            {% if question.jawaban_benar_image_4 %}
+            <tr>
+              <td>Jawaban Benar 4</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_image_4}}</strong></td>
+            </tr>
+            {% endif %}
+            {% if question.jawaban_benar_image_5 %}
+            <tr>
+              <td>Jawaban Benar 5</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_image_5}}</strong></td>
+            </tr>
+            {% endif %}
+            {% if question.jawaban_benar_image_6 %}
+            <tr>
+              <td>Jawaban Benar 6</td>
+              <td>:</td>
+              <td><strong>{{question.jawaban_benar_image_6}}</strong></td>
+            </tr>
+            {% endif %}
+          </table>
+        </div>
+      </div>
+      <div class="panel-body">
+        <a type="button" class="btn btn-danger" href="{% url 'soal_list' question.kode_ujian.slug %}"><i
+            class="fa fa-reply"></i> Back</a>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,158 @@
+{% extends "frontend_full_learnup/base.html" %}
+
+{% block content %}
+<!-- ============================ Page Title Start================================== -->
+<section class="page-title">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-12">
+        
+        <div class="breadcrumbs-wrap">
+          <h1 class="breadcrumb-title">Checkout</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+            </ol>
+          </nav>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================ Page Title End ================================== -->			
+
+{% if user.is_authenticated %}
+<section class="pt-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-12">
+      
+        <div class="cart_totals checkout light_form mb-4">
+          <h4>Order Info</h4>
+          <!-- <form action="{% url 'checkout_course_bundling' pk %}" method="post"> -->
+            <!-- {% csrf_token %} -->
+            <div class="row">
+            
+              <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label for="email">Your Email</label>
+                  <input type="email" class="form-control" name=email placeholder="Your Email" style="text-transform: lowercase;" value="{{email_user}}" readonly>
+                </div>
+              </div>
+              
+              <div class="col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label>Your Full Name</label>
+                  <input type="text" class="form-control" name="fullname" placeholder="Your Full Name" value="{{fullname_user}}" readonly>
+                </div>
+              </div>
+              
+              <div class="col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label>Your Phone Number / WhatsApp</label>
+                  <input type="number" class="form-control" name="no_hp" placeholder="Your Phone Number / WhatsApp" value="{{phone_user}}" readonly>
+                </div>
+              </div>
+
+              <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label>Quantity Of Books Ordered</label>
+                  <input type="text" class="form-control" value="{{jumlah_pesanan}}" readonly>
+                </div>
+              </div>
+
+              <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label>Address</label>
+                  <textarea class="form-control" name="alamat" placeholder="Your Address" readonly rows="3">{{alamat_user}}</textarea>
+                </div>
+              </div>
+
+              <div class="col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label>Kelurahan</label>
+                  <input type="text" class="form-control" name="kelurahan" placeholder="Kelurahan" id="kelurahan" value="{{kelurahan_user}}" readonly>
+                </div>
+              </div>
+
+              <div class="col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label>Kecamatan</label>
+                  <input type="text" class="form-control" name="kecamatan" placeholder="Kecamatan" id="kecamatan" value="{{kecamatan_user}}" readonly>
+                </div>
+              </div>
+
+            <div class="col-lg-6 col-md-6">
+              <div class="form-group">
+                <label for="kota">City</label>
+                <input type="text" class="form-control" name="kota" placeholder="City" value="{{kota_user}}" readonly>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6">
+              <div class="form-group">
+                <label>Postal code</label>
+                <input type="number" class="form-control" name="kode_pos" placeholder="Postal Code" id="kode_pos" value="{{kode_pos_user}}" readonly>
+              </div>
+            </div>
+
+            </div>
+            <button class="btn btn-block bg--instagram" type="submit" onclick="BayarHandler()">Bayar Sekarang</button>
+          </form>
+        </div>
+        
+      </div>
+      
+      <div class="col-lg-4 col-md-12">
+
+        <!-- Total Cart -->
+        <div class="cart_totals checkout">
+          <h4>Order Summary</h4>
+          <div class="cart-wrap">
+            <ul class="cart_list">
+              <li>Order id <strong>{{order_id}}</strong></li>
+              <li>Course code <strong>{{courses.course_code}}</strong></li>
+              <li>Course price <strong>Rp. {{courses.harga_course}}</strong></li>
+              <li>Quantity <strong id="jumlahbarang_old">{{jumlah_pesanan}}</strong><br></li>
+              <li>Book weight (gram) <strong id="beratbuku_old">{{berat_barang}}</strong><br></li>
+              <li>Postal fee <strong id="ongkir_old">{{ongkos_kirim}}</strong><br></li>
+            </ul>
+            <div class="flex_cart" style="margin-bottom: 5px;">
+              <div class="flex_cart_1">
+                Amount pay
+              </div>
+              <div class="flex_cart_2">
+                <strong id="totalhargacourse_old">Rp. {{total_harga_course}}</strong><br>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <hr>
+
+        <p style="color:green">Kurir pengiriman: <strong>{{kurir}} - {{jenis_kirim}}</strong></p>
+
+      </div>
+      
+    </div>
+    
+  </div>
+</section>
+{% else %}
+<div class="container">
+  <div class="alert alert-danger text-center" style="margin-bottom: 200px;">
+    <strong>You have to <a href="{% url 'login_user' %}?next=/course/checkout/{{courses.id}}">LOGIN</a> or <a href="{% url 'signup_new' %}?next=/course/checkout/{{courses.id}}">SIGN-UP</a> first.</strong>
+  </div>
+</div>
+{% endif %}
+{% endblock content %}
+
+{% block scripts %}
+<script>
+  function BayarHandler() {
+    snap.pay('{{token}}');
+  }
+</script>
+{% endblock scripts %}

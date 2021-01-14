@@ -1,0 +1,25 @@
+django==2.2
+django-ckeditor==5.7.1
+# psycopg2==2.7.4
+djoser==2.0.3
+pillow==6.2.0
+djangorestframework==3.9.2
+oauth2client
+django-crispy-forms==1.8.1
+django-import-export==2.0.2
+# django-allauth==0.41.0
+# pyexcel>=0.5.7
+midtransclient
+xlwt
+django-rest-swagger==2.2.0
+psycopg2-binary
+django-mathfilters==1.0.0
+# MediaInfo 
+pydub==0.24.1
+matplotlib==3.3.3
+numpy==1.19.4
+seaborn==0.11.1
+https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.8.0-py3-none-any.whl
+# tensorflow==2.4.0
+ipython==7.19.0
+textdistance==4.2.0

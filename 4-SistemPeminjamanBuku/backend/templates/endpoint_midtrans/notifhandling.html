@@ -1,0 +1,25 @@
+<!-- <!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  </head>
+  <body>
+    
+  </body>
+</html> -->
+
+{% extends 'frontend_full_learnup/base.html' %}
+
+{% block content %}
+<div class="container" style="margin-bottom: 300px;">
+  <div class="alert alert-success text-center" role="alert" style="margin-top: 50px">
+    <h1 style="color: rgb(0, 102, 255);">Notification Handling</h1>
+    <h3>Get Handling from midtrans</h3>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+    </form>
+  </div>
+</div>
+{% endblock content %}

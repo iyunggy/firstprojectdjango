@@ -1,0 +1,299 @@
+{% extends "dashboard/base.html" %}
+{% load humanize %}
+{% load static %}
+
+{% block breadcrumb_item %}
+<li>Marketing Squad Profile</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading">
+        <h4 class="panel-title">Marketing Squad Profile</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if user_marketing_squard %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-white">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-3">
+            {% if user_marketing_squard.photo %}
+              <img src="{{user_marketing_squard.photo.url}}" class="photo-profile-marketing" style="margin: 20px;" alt="">
+            {% else %}
+            <img src="{% static 'image/no-image-available.png' %}" class="photo-profile-marketing" style="margin: 20px;" alt="">
+            {% endif %}
+            
+            <a href="{% url 'marketing_squard_profile_update' user_marketing_squard.id %}" class="btn btn-primary" style="margin: 20px;">Edit Profile</a>
+            </div>
+            <div class="col-md-9">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <td>ID Marketing Squad</td>
+                      <td>{{user_marketing_squard.id_marketing_squard}}</td>
+                    </tr>
+                    <tr>
+                      <td>Fullname</td>
+                      <td>{{user_marketing_squard.user.fullname}}</td>
+                    </tr>
+                    <tr>
+                      <td>Email</td>
+                      <td>{{user_marketing_squard.user.email}}</td>
+                    </tr>
+                    <tr>
+                      <td>Nama Bank</td>
+                      <td>
+                        {% if user_marketing_squard.nama_bank %}
+                          {{user_marketing_squard.nama_bank}}
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>No. Rekening</td>
+                      <td>
+                        {% if user_marketing_squard.no_rekening %}
+                          {{user_marketing_squard.no_rekening}}
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Level</td>
+                      <td>
+                        {% if user_marketing_squard.level %}
+                        {{user_marketing_squard.level}}
+                        {% else %}
+                        -
+                        {% endif %}
+                        &nbsp;
+                        {% if user_marketing_squard.level == "SUPER MENTOR" %}
+                        &#9734;&#9734;&#9734;&#9734;
+                        {% elif user_marketing_squard.level == "SENIOR MENTOR" %}
+                        &#9734;&#9734;&#9734;
+                        {% elif user_marketing_squard.level == "KAKAK MENTOR" %}
+                        &#9734;&#9734;
+                        {% elif user_marketing_squard.level == "ROOKIE" %}
+                        &#9734;
+                        {% endif %}
+                      </td>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-white">
+        <div class="panel-body">
+          <div class="col-md-6">
+            <h3>List Course yang dapat dijual</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-hover" id="example">
+              <thead>
+                <th>List Course</th>
+                <th>Harga Asli</th>
+                <th>Harga Setelah Diskon</th>
+                <th>Voucher</th>
+                <th>Copy</th>
+                <th>Link</th>
+              </thead>
+              <tbody>
+                {% for list in array_course %}
+                <!-- filter course yang valid only -->
+                  <!-- {% if list.course.tanggal_mulai <= today and list.course.tanggal_akhir >= today %} -->
+                  <tr>
+                    <td>{{list.course.course_code}}</td>
+                    <td>Rp {{list.course.harga_course|intcomma}}</td>
+                    <td>Rp {{list.harga_diskon|intcomma}}</td>
+                    <td>{{list.voucher.kode}}</td>
+                    <td>
+                      {% if list.voucher %}
+                      <button onclick="myFunction('{{list.course.id}}')">Copy Link</button>
+                      &nbsp; <button><a href="https://wa.me/?text={{current_domain}}/course/detail/{{list.course.id}}/{% if list.voucher %}{{list.voucher.kode}}/{{user_marketing_squard.id_marketing_squard}}{% endif %}"><i class="fa fa-link"></i> Share WA</a></button>
+                      {% else %}
+                      <em>voucher belum tersedia, silahkan hubungi Admin.</em>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if list.voucher %}
+                      <input type="text" class="form-control" id="{{list.course.id}}" value="{{current_domain}}/course/detail/{{list.course.id}}/{% if list.voucher %}{{list.voucher.kode}}/{{user_marketing_squard.id_marketing_squard}}{% endif %}" readonly style="outline: none;">
+                      {% else %}
+                      <em>voucher belum tersedia, silahkan hubungi Admin.</em>
+                      {% endif %}
+                    </td>
+                    <!--  {{current_domain}}/course/detail/{{list.course.id}}/
+                      {% if list.voucher %}
+                        {{list.voucher.kode}}/{{user_marketing_squard.id_marketing_squard}}
+                      {% endif %} -->
+                    
+                  </tr>
+                  <!-- {% endif %} -->
+                {% empty %}
+                <tr>
+                  <td colspan="5" align="center" style="color: red;">No data</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-white">
+        <div class="panel-body">
+          <div class="row">
+            <form action="{% url 'marketing_squard_profile' %}" method="GET">
+              <div class="col-sm-4">
+                <input type="date" name="mulai" class="form-control" value="{{mulai}}" />
+                &nbsp;
+              </div>
+              <div class="col-sm-4">
+                <input type="date" name="akhir" class="form-control" value="{{akhir}}" />
+                &nbsp;
+              </div>
+              <div class="col-sm-4">
+                <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Filter Berdasarkan Tanggal</button>
+              </div>
+            </form>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+            <h3>Sisa yang harus dibayarkan oleh Admin: {{selisih_bayar|intcomma}}</h3>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-white">
+        <div class="panel-body">
+          <div class="col-md-6">
+            <p><b>Komisi yang di dapat</b></p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <th>Course</th>
+                <th>Number of Sale (qty)</th>
+                <th>Akumulasi Penjualan</th>
+                <th>Komisi</th>
+                <th>Action</th>
+              </thead>
+              <tbody>
+                {% for list in array_komisi %}
+                  <tr>
+                    <td>{{list.kode_course}}</td>
+                    <td>{{list.qty}}</td>
+                    <td>{{list.harga_bayar_course|intcomma}}</td>
+                    <td>{{list.komisi|intcomma}}</td>
+                    <td>
+                      <a class="btn btn-success btn-sm" title="Detail" href="{% url 'list_order_marketing_squard' course_code=list.kode_course id_marketing_squad=user_marketing_squard.id_marketing_squard %}"><i class="fa fa-eye"></i></a>
+                    </td>
+                  </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" align="center" style="color: red;">No data</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <th colspan="2" class="text-center">Total</th>
+                  <th>{{total_akumulasi_harga_bayar_course|intcomma}}</th>
+                  <th>{{total_akumulasi_komisi|intcomma}}</th>
+                  <th></th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="panel panel-white">
+        <div class="panel-body">
+          <div class="col-md-6">
+            <p><b>Riwayat pembayaran komisi</b></p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <th>Tanggal</th>
+                <th>Jumlah Pembayaran</th>
+              </thead>
+              <tbody>
+                {% for list in history_pembayaran_komisi %}
+                  <tr>
+                    <td>{{list.created_on}}</td>
+                    <td>{{list.jumlah_bayar|intcomma}}</td>
+                  </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" align="center" style="color: red;">No data</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <th class="text-center">Total</th>
+                  <th>{{total_akumulasi_bayar_komisi|intcomma}}</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% else %}
+  <div class="row">
+    <div class="col-md-12"> 
+      <div class="panel panel-white">
+        <div class="panel-body">
+          <h2>Anda belum terdaftar sebagai Marketing Squad. Silahkan hubungin Admin Educourse.</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+  
+{% endblock content %}
+
+
+{% block scripts %}
+<script>
+  function myFunction(list_id) {
+    console.log('list_id', list_id, typeof(list_id))
+    var copyText = document.getElementById(list_id);
+    copyText.select();
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy");
+    alert("Copied the text: " + copyText.value);
+  }
+  </script>
+{% endblock scripts %}
+  

@@ -1,0 +1,43 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+
+<div class="alert alert-warning" role="alert">
+  Anda harus melakukan SUBSCRIBE terlebih dulu dengan <a href="{% url 'frontend_course' %}">KLIK DISINI</a> untuk bisa mengakses course yang ada.
+</div>
+<div class="row">
+  {% for course in courses %}
+  <div class="col-md-3">
+      <div class="user-profile-panel panel panel-white">
+          <div class="panel-heading">
+              <div class="panel-title">{{course.judul}}</div>
+          </div>
+          <div class="panel-body">
+            {% if course.image %}
+              <img src="{{course.image.url}}" class="img-preview" style="object-fit: cover;" alt="">
+              {% endif%}
+              <hr>
+              <p class="text-left"><b>{{course.tanggal_mulai}} - {{course.tanggal_akhir}}</b></p>
+              <ul class="well text-left">
+                  <p>{{course.deskripsi_singkat|slice:":50"}}</p>
+              </ul>
+              <hr>
+              {% if course.is_preview_only %}
+                <a class='btn btn-block btn-default disabled' title='DETAIL' href="{% url 'course_student_detail' course.id %}">
+                    DETAIL
+                </a>
+              {% else %}
+                <a class='btn btn-info btn-block' title='DETAIL' href="{% url 'course_student_detail' course.id %}">
+                    DETAIL
+                </a>
+              {% endif %}
+          </div>
+      </div>
+  </div>
+  {% endfor%}
+</div>
+
+{% endblock content %}
+
+{% block scripts%}
+{% endblock %}

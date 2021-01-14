@@ -1,0 +1,95 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <h3 class="text-center">PERATURAN QUIZ ONLINE</h3>
+        <hr><br>
+        <p>Peserta yang mengikuti kuis merupakan siswa terdaftar dari I-GEN yang siap dan sanggup menaati tata tertib selama ujian.  </p>
+        <div class="card">
+          <div class="card-body">
+            <ol>
+              <li>Quis dimulai hanya jika guru mengarahkan & mempersilahkan untuk menjawab soal.</li>
+              <li>Peserta tidak boleh menutup browser selama Quiz berlangsung. Apabila ditutup, maka tidak akan bisa kembali dan akan dianggap selesai dalam mengerjakan Quiz.</li>
+              <li>Selama menjawab pertanyaan dimohon untuk tidak membuka browser lain / melakukan pindah tab browser.</li>
+              <li>Peserta harus menjawab soal sesuai dengan durasi waktu yang telah diberikan. Sistem akan secara otomatis menutup soal apabila terjadi <i>timeout</i>.</li>
+              <li>Penilaian Quis bersifat obyektif secara otomatis dari sistem. Tidak ada nilai multiple, dan tidak ada pengurangan nilai ketika salah menjawab.</li>
+              <li>Pertanyaan di Kuis IGEN bersifat rahasia. Peserta tidak diperbolehkan menyimpan, screenshoot, atau memberi tahu rekan lain isi kuis dari I-GEN.</li>
+              <li>Hasil kuis bisa dicek pada menu <b>Report</b> untuk soal Biasa / <b>Report Psikologi</b> untuk soal Psikologi. Hasil tersebut bersifat pribadi dan tidak dibuka untuk umum.</li>
+              <li>Pelanggaran akan tata tertib akan dikenakan sanksi sesuai dengan aturan yang telah ditetapkan oleh manajemen I-GEN.</li>
+            </ol>
+            <hr>
+            <input type="checkbox" id="agreerulesquiz" name="agreerulesquiz" value="Not Agree">
+            <label for="agreerulesquiz"> Saya menyetujui aturan I-GEN QUIZ ONLINE</label><br>
+            <p><i>(Anda harus men-check persetujuan diatas untuk bisa memulai Quiz)</i></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="mulaiquiz" class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <div class="alert alert-danger text-center">
+          <p>Pastikan Anda <b>sudah siap mengikuti Ujian sampai akhir</b> ketika klik tombol <b>MULAI QUIZ SEKARANG</b>.
+            Anda <b>tidak akan bisa kembali lagi</b> ketika keluar atau pindah dari browser yang ada.</p>
+        </div>
+        <h3 class="text-center">MULAI QUIZ </h3>
+        <hr><br>
+        <form action="{% url 'check_kode' %}" method='post'>
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="formGroupExampleInput">Kode Quiz</label>
+            <input type="text" class="form-control" name="kode_kelompok_ujian" placeholder="Masukan kode kelompok ujian" value="{{passing_code}}">
+          </div>
+          <!-- <div class="form-group">
+            <label for="formGroupExampleInput">Kode Ujian</label>
+            <input type="text" class="form-control" name="kode_ujian" placeholder="Masukan kode ujian">
+          </div> -->
+          <div class="form-group">
+            <input type="hidden" name="nomor_soal" value="-1">
+          </div>
+          <!--<div class="form-group">
+            <input type="hidden" name="urutan_ujian" value="0">
+          </div> -->
+          <div class="form-group">
+            <input type="hidden" name="date_time">
+          </div>
+          <button type="submit" class="btn btn-primary">MULAI QUIZ SEKARANG</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function() {
+        //set initial state.
+        $('#agreerulesquiz').val('Not Agree');
+        $('#mulaiquiz').hide()
+
+        $('#agreerulesquiz').change(function() {
+            if($('#agreerulesquiz').val() == 'Not Agree'){
+              $('#agreerulesquiz').val('Agree');
+              console.log('centang')
+              $('#mulaiquiz').show()
+            }else{
+              $('#agreerulesquiz').val('Not Agree');
+              console.log('tolak')
+              $('#mulaiquiz').hide()
+            }
+
+
+        });
+    });
+  </script>
+{% endblock scripts%}

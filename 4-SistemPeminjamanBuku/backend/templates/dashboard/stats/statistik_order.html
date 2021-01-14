@@ -1,0 +1,197 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading clearfix">
+        <h3 class="panel-title">Product Popularity (Quantity Count More Than 10)</h3>
+        <div class="panel-control">
+          <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="" class="panel-reload" data-original-title="Reload"><i class="icon-reload"></i></a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div>
+          <canvas id="chart2" height="150"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading clearfix">
+        <h3 class="panel-title">Order
+          {% if status_order == "Tidak pilih" and rentang_waktu == "Tidak pilih" %}
+          <em>bulanan</em> yang <em>sudah LUNAS</em> tahun {{tahun}}
+          {% else %}
+          <em>{{rentang_waktu}}</em> yang <em>{{status_order}}</em> tahun {{tahun}}
+          {% endif %}
+        </h3>
+        <div class="panel-control">
+          <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="" class="panel-reload" data-original-title="Reload"><i class="icon-reload"></i></a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form action="{% url 'order_statistic' %}" method="GET">
+          <div class="col-md-3 form-group">
+            <select name="status_order" class="js-states form-control" required>
+              <!-- <option  value="" selected="selected">---SELECT STATUS ORDER---</option> -->
+              <option value="LUNAS" {% if status_order == "LUNAS" %} selected {% endif %}>LUNAS</option>
+              <option value="BELUM LUNAS" {% if status_order == "BELUM LUNAS" %} selected {% endif %}>BELUM LUNAS</option>
+            </select>
+          </div>
+          <div class="col-md-3 form-group">
+            <select name="rentang_waktu" class="js-states form-control" required>
+              <!-- <option  value="" selected="selected">---SELECT RENTANG WAKTU---</option> -->
+              <option value="Bulanan" {% if rentang_waktu == "Bulanan" %} selected {% endif %}>Bulanan</option>
+              <option value="Harian" {% if rentang_waktu == "Harian" %} selected {% endif %}>Harian</option>
+              <option value="Last Week" {% if rentang_waktu == "Last Week" %} selected {% endif %}>Last Week</option>
+            </select>
+          </div>
+          <div class="col-md-3 form-group">
+            <select name="tahun_order" class="js-states form-control" required>
+              <!-- <option  value="" selected="selected">---SELECT TAHUN (omset bulanan)----</option> -->
+              {% for list in distinct_order_year %}
+                <option value="{{list}}" {% if list == tahun %} selected {% endif %}>{{list}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3 form-group">
+            <button type="submit" class="btn btn-info btn-sm btn-rounded"><i class="fa fa-search"></i> Cari</button>
+          </div>
+        </form>
+      </div>
+      <div class="panel-body">
+        <div>
+          <canvas id="chart1" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts%}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script>
+//   function getRandomColor() {
+//   var letters = '0123456789ABCDEF';
+//   var color = '#';
+//   for (var i = 0; i < 6; i++) {
+//     color += letters[Math.floor(Math.random() * 16)];
+//   }
+//   return color;
+// }
+
+// function setRandomColor() {
+//   $("#colorpad").css("background-color", getRandomColor());
+// }
+
+  var xLabel = {{ xLabel | safe }}
+  var xAxis = {{ xAxis | safe }}
+  // console.log(xLabel)
+  // console.log(xAxis)
+  var z = '{{ rentang_waktu | safe }}'
+  // console.log(z)
+  var xLabel_order = {{xLabel_order|safe}}
+  var xAxis_order_lunas = {{record_order_lunas|safe}}
+  var xAxis_order_belum_lunas = {{record_order_belum_lunas|safe}}
+  // console.log(xLabel_order)
+  // console.log(xAxis_order_lunas)
+  // console.log(xAxis_order_belum_lunas)
+
+  function LabelsStatistik(z) {
+    if (z == "Tidak pilih") {
+      return "Order Bulanan"
+    } else{
+      return "Order " + z
+    }
+  }
+  
+
+  var data1 = {
+    labels: xLabel,
+    datasets: [{
+      label: LabelsStatistik(z),
+      backgroundColor: 'rgb(0, 191, 255, 0.2)',
+      borderColor: 'rgb(0, 191, 255, 1)',
+      borderWidth: 1,
+      data: xAxis,
+    }]
+  };
+
+  var ctx1 = $("#chart1");
+  var myBarChart = new Chart(ctx1, {
+    type: 'line',
+    data: data1,
+    options: {
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+
+  var data2 = {
+    labels: xLabel_order,
+    datasets: [{
+      label: 'Order Lunas',
+      backgroundColor: 'rgb(0, 191, 255, 0.2)',
+      borderColor: 'rgb(0, 191, 255, 1)',
+      borderWidth: 1,
+      data: xAxis_order_lunas,
+    }, {
+      label: 'Order Belum Lunas',
+      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      borderColor: 'rgba(255, 99, 132, 1)',
+      borderWidth: 1,
+      data: xAxis_order_belum_lunas,
+    }]
+  };
+
+  var ctx2 = $("#chart2");
+  var myBarChart = new Chart(ctx2, {
+    type: 'bar',
+    data: data2,
+    options: {
+      scales: {
+        yAxes: [{
+          stacked: true,
+          ticks: {
+            beginAtZero: true
+          }
+        }],
+        xAxes: [{
+          stacked: true,
+          ticks: {
+            callback: function(t) {
+              var maxLabelLength = 6;
+              // if (t.length > maxLabelLength) return t.substr(0, maxLabelLength) + '...';
+              if (t.length > maxLabelLength) return t.substr(0, maxLabelLength);
+              else return t;
+            }
+          }
+        }]
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        callbacks: {
+          title: function(t, d) {
+              return d.labels[t[0].index];
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>  <a href="{% url 'marketing_squard_list' %}">List Marketing Squad</a></li>
+<li>Delete Marketing Squad</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" %}
+      <!-- page untuk admin -->
+      <div class="panel-heading">
+        <h4 class="panel-title">Delete Confirmation</h4>
+      </div>
+      <div class="panel-body">
+        <div class="col-md-6 col-md-offset-3">
+          <div class="alert alert-warning text-center">
+            <strong>Perhatian: Jika Anda menghapus User ini dari List Marketing Squad akan menghapus komisi nya juga. Apakah Anda yakin ingin menghapusnya ?</strong>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Photo</td>
+              <td>:</td>
+              <td>
+                {% if marketingsquard.photo %}
+                <img src="{{marketingsquard.photo.url}}" alt="" height="50%">
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>ID Marketing Squad</td>
+              <td>:</td>
+              <td> {{marketingsquard.id_marketing_squard}}</td>
+            </tr>
+            <tr>
+              <td>Email</td>
+              <td>:</td>
+              <td> {{marketingsquard.user.email}}</td>
+            </tr>
+            <tr>
+              <td>Fullname</td>
+              <td>:</td>
+              <td> {{marketingsquard.user.fullname}}</td>
+            </tr>
+            <tr>
+              <td>No Rekening</td>
+              <td>:</td>
+              <td>{{marketingsquard.no_rekening}}</td>
+            </tr>
+            <tr>
+              <td>Level</td>
+              <td>:</td>
+              <td>
+                {% if marketingsquard.level %}
+                {{marketingsquard.level}}
+                {% else %}
+                -
+                {% endif %}
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary"> Ok</button>
+          <a type="button" class="btn btn-danger" href="{% url 'marketing_squard_list' %}"><i class="fa fa-reply"></i>
+            Back</a>
+        </form>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,150 @@
+{% extends "dashboard/base.html" %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+
+      {% if ans_count_per_user >= que.max_repeat %}
+      <div class="panel-body">
+        <div class="alert alert-danger text-center">
+          <p>Anda tidak dapat menambah Jawaban lagi karena Anda <b>sudah melebihi batas percobaan per question</b> yang diinginkan. Silahkan klik <b>Next</b></p>
+        </div>
+      </div>
+      <hr>
+      {% endif %}
+
+      <div class="panel-body">
+        <div style="border:1px solid black; padding: 20px;">
+          
+          {% if que.image %}
+            <div class="text-center">
+              <img src="{{que.image.url}}" alt="" width="100%">
+            </div>
+          {% endif %}
+            
+          <h3><b>Question {{que.urutan_display}}:</b></h3>
+          <p>{{que.instruction}} <br> {{que.text_question|linebreaks}}</p>
+          
+          {% if que.question_audio %}
+          <audio controls autoplay  controlsList="nodownload">
+            <source src="{{que.question_audio.url}}">
+          Your browser does not support the audio element.
+          </audio>
+          {% endif %}
+            
+        </div>
+        <br>
+        <p>Max Duration Record: <b>{{que.answer_duration}} second</b> <br> Max Repeat Record: <b>{{que.max_repeat}} x</b></p>
+        <hr>
+      </div>
+
+      {% if ans_count_per_user >= que.max_repeat %}
+      <div class="panel-body">
+        <button class="btn btn-primary" disabled>Add Anwer</button>
+      </div>
+      {% else %}
+      <div class="panel-body">
+        <a class="btn btn-primary" href="{% url 'speaking_test_create' que.pk %}">Add Answer</a>
+      </div>
+      {% endif %}
+
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <th>Created On</th>
+              <th>User</th>
+              <th>Question</th>
+              <th>Translated sentences</th>
+              <th>Voice Recorder</th>
+              <th>Score</th>
+            </thead>
+            <tbody>
+              {% for ans in answers %}
+              <tr>
+                <td>{{ans.created_on}}</td>
+                <td>{{ans.user}}</td>
+                <td>{{ans.question}}</td>
+                <th>{{ans.translated_sentences}}</th>
+                <td>
+                  {% if ans.file_audio %}
+                  <audio controls  controlsList="nodownload">
+                    <source src="{{ans.file_audio.url}}">
+                  Your browser does not support the audio element.
+                  </audio>
+                  {% endif %}
+                </td>
+                <td>{{ans.score}}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="6" align="center" style="color: red;">No Answer Yet</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="text-center">
+          <p>Klik next untuk melanjutkan ke Question selanjutnya.</p>
+
+          <form action="{% url 'check_speaking_test' %}" method='post'>
+            {% csrf_token %}
+            <div class="form-group">
+              <!-- <label for="formGroupExampleInput">Course Code</label> -->
+              <input type="hidden" class="form-control" name="course_code_speaking" value="{{que.course.course_code}}" readonly>
+            </div>
+  
+            <div class="form-group">
+              <input type="hidden" name="urutan_speaking" value="{{que.urutan_display}}">
+            </div>
+  
+            <button type="submit" class="btn btn-twitter btn-block">NEXT</button>
+          </form>
+        <!-- <a class="btn btn-twitter btn-block" href="">NEXT</a> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+<!-- <!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Detail   </title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>{{que.text_question}}</h1>
+      <div class="list-group">
+        <br>
+        <a class="btn btn-primary" href="" role="button">Add answer</a>
+        <br>
+        {% if ans_length == 0 %}
+        <p>No Answer yet</p>
+        {% endif %}
+        {% for ans in answers %}
+        <a href="#" class="list-group-item list-group-item-action disabled">{{ans.score}}</a>
+        {% endfor %}
+      </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html> -->
+
+  

@@ -1,0 +1,25 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>Create Mapping Teacher</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{form.media}}
+          {{form.as_p}}
+          <a class="btn btn-danger" href="{% url 'mapping_teacher_list' %}"><i class="fa fa-reply m-r-xs"></i>Cancel</a>
+          <button type="submit" class="btn btn-primary" name="add_another"><i class="fa fa-plus"></i> Save and add
+            another</button>
+          <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

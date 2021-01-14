@@ -1,0 +1,17 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <h3>Document telah terkirim, silahkan cek email terkirim pada email yang digunakan di sistem untuk memastikan telah terkirim semua.</h3>
+        <!-- <p>Anda dapat mengirim email lagi setelah 10-15 menit untuk menghindari crash sistem.</p> -->
+      </div>
+      <div class="panel-body">
+        <a type="button" class="btn btn-danger" href="{% url 'blast_email' %}"><i class="fa fa-reply"></i> Back</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

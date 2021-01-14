@@ -1,0 +1,360 @@
+{% extends "dashboard/base.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body" id="question">
+        <form action="{% url 'check' %}" method="post">
+          {% csrf_token %}
+          <div class="well well-sm">
+            <h4 class="m-t-md">Question Number</h4>
+            <label>
+              <input type="hidden" name="cek_kode_ujian" id="cek_kode_ujian" value={{kode_ujian}} />
+            </label>
+            <label>
+              <input type="hidden" name="cek_kode_kelompok_ujian" id="cek_kode_kelompok_ujian" value={{kode_kelompok_ujian}} />
+            </label>
+            <label>
+              <input type="hidden"  name="cekupdatemenit" id="cekupdatemenit" />
+            </label>
+            <label>
+              <input type="hidden"  name="cekupdatedetik" id="cekupdatedetik" />
+            </label>
+            <label>
+              <input type="hidden" name="answer_id" id="answer_id" value={{answer_id_hidden}} />
+            </label>
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+              <div class="btn-group" role="group" disabled>
+                {% for list in number_navigation %}
+                  {% if list.status == 'active'%}
+                    {% if ready_submit == True %}
+                      <button  type="button" class="button-num-nav button-num-nav2">
+                        <input style="border-color: transparent;background-color: #008CBA; color: white;" type="submit" name="nomor" value="{{list.nomor}}" id="nomor"/>
+                      </button>
+                    {% else %}
+                      <button  type="button" disabled class="button-num-nav button-num-nav2">
+                        <input disabled style="border-color: transparent;background-color: #008CBA; color: white;" type="submit" name="nomor" value="{{list.nomor}}" id="nomor"/>
+                      </button>
+                    {% endif %}
+                  {% elif list.status == 'not_done' %}
+                    {% if ready_submit == True %}
+                    <button  type="button" class="button-num-nav">
+                      <input  style=" border-color: transparent;background-color:#e7e7e7;color: black;" type="submit" name="nomor" id="nomor" value={{list.nomor}} />
+                    </button>
+                    {% else %}
+                    <button  type="button" disabled class="button-num-nav">
+                      <input disabled style="border-color: transparent;background-color:#e7e7e7;color: black;" type="submit" name="nomor" value="{{list.nomor}}" id="nomor"/>
+                    </button>
+                    {% endif %}
+                  {% else %}
+                    {% if ready_submit == True %}
+                    <button  type="button" class="button-num-nav button-num-nav4">
+                      <input style="border-color: transparent;background-color:#e7e7e7;color: black;" type="submit" name="nomor" value="{{list.nomor}}" id="nomor"/>
+                    </button>
+                    {% else %}
+                    <button  type="button" disabled class="button-num-nav button-num-nav4">
+                      <input disabled style="border-color: transparent;background-color:#e7e7e7;color: black;" type="submit" name="nomor" value="{{list.nomor}}" id="nomor"/>
+                    </button>
+                    {% endif %}
+                  {% endif%}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </form>
+        <form action="{% url 'start' %}" method="post">
+          {% csrf_token %}
+          <div class="panel-body">
+            <strong>
+              <p class="text-center" name='newtimer' id="newtimer"></p>
+            </strong>
+            <label>
+              <input type="hidden" name="menit" id="menit" value={{menit_ujian}} />
+            </label>
+            <label>
+              <input type="hidden" name="detik" id="detik" value={{detik_ujian}} />
+            </label>
+            <label>
+              <input type="hidden" name="updatemenit" id="updatemenit" />
+            </label>
+            <label>
+              <input type="hidden" name="updatedetik" id="updatedetik" />
+            </label>
+            <label>
+              <input type="hidden" name="answer_id" id="answer_id" value={{answer_id_hidden}} />
+            </label>
+            {% if warning == ''%}
+            <div>
+              <strong>{{warning}}</strong>
+            </div>
+            {% else %}
+            <div class="alert alert-danger text-center">
+              <strong>{{warning}}</strong>
+            </div>
+            {% endif%}
+            <div class="control-group m-b-sm" id="toastTypeGroup">
+              <!-- navigasi nomor -->
+
+              {% if ready_submit == True %}
+              <div class="alert alert-success" role="alert">
+                  <h4 class="alert-heading">Well done!</h4>
+                  <p>Semua soal telah dikerjakan. Silahkan klik tombol <strong>FINISH EXAM</strong> apabila Anda ingin mengakhiri Ujian ini,
+                    atau klik nomor pada <strong> Question Number </strong> apabila Anda ingin cek ulang jawaban yang ada.</p>
+                </div>
+              {% endif %}
+              <!--  -->
+              <div id="pertanyaan">
+                {% for q in questions %}
+                <div style="border:1px solid black; padding: 20px;">
+                  <p><strong><u>Question {{q.nomor}} of {{questions_length}}:</u></strong></p>
+                  <p>{{q.pertanyaan|safe}}</p>
+                  {% if q.attach_mp3 %}
+                  <audio autoplay controls >
+                    <source src="{{ q.attach_mp3.url}}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                  </audio>
+                  {% endif %}
+                </div> <br> <br>
+                <div style="border:1px solid black; padding: 20px;">
+                  <p><strong><u>Choices:</u></strong></p>
+                  {% if q.type_soal == "SINGLE SELECTION" %}
+                  <div class="controls">
+                    <!-- jawaban text -->
+                    {% if q.A %}
+                    <label>
+                      <input type="radio" name="answer" value="A" id="toggle" /> {{q.A}}
+                    </label>
+                    {% endif %}
+                    {% if q.B %}
+                    <label>
+                      <input type="radio" name="answer" value="B" id="toggle" /> {{q.B}}
+                    </label>
+                    {% endif %}
+                    {% if q.C %}
+                    <label>
+                      <input type="radio" name="answer" value="C" id="toggle" /> {{q.C}}
+                    </label>
+                    {% endif %}
+                    {% if q.D %}
+                    <label>
+                      <input type="radio" name="answer" value="D" id="toggle" /> {{q.D}}
+                    </label>
+                    {% endif %}
+                    {% if q.E %}
+                    <label>
+                      <input type="radio" name="answer" value="E" id="toggle" /> {{q.E}}
+                    </label>
+                    {% endif %}
+                    {% if q.F %}
+                    <label>
+                      <input type="radio" name="answer" value="F" id="toggle" /> {{q.F}}
+                    </label>
+                    {% endif %}
+                    <!-- jawaban gambar -->
+                    {% if q.A_image %}
+                    <label>
+                      <input type="radio" name="answer" value="A_image" id="toggle" /> <img class="img-preview"  src="{{q.A_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    {% if q.B_image %}
+                    <label>
+                      <input type="radio" name="answer" value="B_image" id="toggle" /> <img class="img-preview" src="{{q.B_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    {% if q.C_image %}
+                    <label>
+                      <input type="radio" name="answer" value="C_image" id="toggle" /> <img class="img-preview" src="{{q.C_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    {% if q.D_image %}
+                    <label>
+                      <input type="radio" name="answer" value="D_image" id="toggle" /> <img class="img-preview" src="{{q.D_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    {% if q.E_image %}
+                    <label>
+                      <input type="radio" name="answer" value="E_image" id="toggle" /> <img class="img-preview" src="{{q.E_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    {% if q.F_image %}
+                    <label>
+                      <input type="radio" name="answer" value="F_image" id="toggle" /> <img class="img-preview" src="{{q.F_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    <label>
+                      <input type="hidden" name="kode_kelompok_ujian" value={{kode_kelompok_ujian}} />
+                    </label>
+                    <label>
+                      <input type="hidden" name="kode_ujian" value="{{kode_ujian}}">
+                    </label>
+                    <label>
+                      <input type="hidden" name="nomor_soal" value={{q.nomor}} />
+                    </label>
+                  </div>
+                  {% else %}
+                  <div class="controls">
+                    <!-- jawaban text -->
+                    {% if q.A %}
+                    <label>
+                      <input type="checkbox" name="answer" value="A" id="toggle" /> {{q.A}}
+                    </label>
+                    {% endif %}
+                    {% if q.B %}
+                    <label>
+                      <input type="checkbox" name="answer" value="B" id="toggle" /> {{q.B}}
+                    </label>
+                    {% endif %}
+                    {% if q.C %}
+                    <label>
+                      <input type="checkbox" name="answer" value="C" id="toggle" /> {{q.C}}
+                    </label>
+                    {% endif %}
+                    {% if q.D %}
+                    <label>
+                      <input type="checkbox" name="answer" value="D" id="toggle" /> {{q.D}}
+                    </label>
+                    {% endif %}
+                    {% if q.E %}
+                    <label>
+                      <input type="checkbox" name="answer" value="E" id="toggle" /> {{q.E}}
+                    </label>
+                    {% endif %}
+                    {% if q.F %}
+                    <label>
+                      <input type="checkbox" name="answer" value="F" id="toggle" /> {{q.F}}
+                    </label>
+                    {% endif %}
+                    <!-- jawaban gambar -->
+                    {% if q.A_image %}
+                    <label>
+                      <input type="checkbox" name="answer" value="A_image" id="toggle" /> <img class="img-preview" src="{{q.A_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    {% if q.B_image %}
+                    <label>
+                      <input type="checkbox" name="answer" value="B_image" id="toggle" /> <img class="img-preview" src="{{q.B_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    {% if q.C_image %}
+                    <label>
+                      <input type="checkbox" name="answer" value="C_image" id="toggle" /> <img class="img-preview" src="{{q.C_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    {% if q.D_image %}
+                    <label>
+                      <input type="checkbox" name="answer" value="D_image" id="toggle" /> <img class="img-preview" src="{{q.D_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    {% if q.E_image %}
+                    <label>
+                      <input type="checkbox" name="answer" value="E_image" id="toggle" /> <img class="img-preview" src="{{q.E_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    {% if q.F_image %}
+                    <label>
+                      <input type="checkbox" name="answer" value="F_image" id="toggle" /> <img class="img-preview" src="{{q.F_image.url}}" alt="">
+                    </label><br>
+                    {% endif %}
+                    <label>
+                      <input type="hidden" name="kode_kelompok_ujian" value={{kode_kelompok_ujian}} />
+                    </label>
+                    <label>
+                      <input type="hidden" name="kode_ujian" value="{{kode_ujian}}">
+                    </label>
+                    <label>
+                      <input type="hidden" name="nomor_soal" value={{q.nomor}} />
+                    </label>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+
+              {% if ready_submit != True %}
+              <br> <br>
+                <button type="submit" class="btn btn-primary">NEXT</button>
+              {% endif %}
+            </div>
+          </div>
+        </form>
+        {% if ready_submit == True %}
+        <form  action="{% url 'check_kode' %}" method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            <input type="hidden" name="kode_kelompok_ujian" value={{kode_kelompok_ujian}}>
+          </div>
+          <label>
+            <input type="hidden" name="kode_ujian_selesai" value={{kode_ujian}} />
+          </label>
+          <label>
+            <input type="hidden" name="nomor_soal" value="-1">
+          </label>
+          <button type="submit" class="btn btn-danger">FINISH EXAM</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+  <script>
+    var minutes = $('#menit').val()
+    var seconds = $('#detik').val()
+    // $('#timer').hide()
+    console.log('minutes', minutes)
+    console.log('detik', seconds)
+    var countDownDate = new Date(new Date().getTime() + (1000 * ((parseInt(minutes)*60) + parseInt(seconds))));
+    console.log('countDownDate', countDownDate)
+
+    // Update the count down every 1 second
+    var x = setInterval(function () {
+
+      // Get today's date and time
+      var now = new Date().getTime();
+      // console.log('now', now)
+
+      // Find the distance between now and the count down date
+      var distance = countDownDate - now;
+
+      // Time calculations for days, hours, minutes and seconds
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      // Output the result in an element with id="demo"
+      document.getElementById("newtimer").innerHTML = minutes + "m " + seconds + "s ";
+      // $('#menit').val(minutes)
+      // $('#detik').val(seconds)
+      document.getElementById("cekupdatemenit").value = minutes;
+      document.getElementById("cekupdatedetik").value = seconds;
+      document.getElementById("updatemenit").value = minutes;
+      document.getElementById("updatedetik").value = seconds;
+
+      // If the count down is over, write some text
+      if (distance < 0) {
+        clearInterval(x);
+        $('#pertanyaan').hide()
+        var url = "{% url 'check_kode' %}";
+        var form = $('<form action="' + url + '" method="POST">' +
+          '{% csrf_token %}' +
+          '<input type="hidden" name="kode_kelompok_ujian" value={{kode_kelompok_ujian}} />' +
+          '<input type="hidden" name="kode_ujian_selesai" value={{kode_ujian}} />' +
+          '<input type="hidden" name="nomor_soal" value="-1" />' +
+          '</form>');
+        $('body').append(form);
+        form.submit();
+      }
+    }, 1000);
+  </script>
+  <script>
+    var nomor = $('#nomor').val()
+    console.log('nomor: ', nomor)
+  </script>
+
+{% endblock scripts %}

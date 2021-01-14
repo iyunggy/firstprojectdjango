@@ -1,0 +1,80 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>List Assignment</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <div class="col-md-6">
+          {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+          <a href="{% url 'assignment_create' pk %}" class="btn btn-primary">Tambah Assignment</a>
+          {% endif %}
+        </div>
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'assignment_list' pk %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <!-- <th>Course</th> -->
+              <th>Topic</th>
+              <th>Judul Assignment</th>
+              <th>Created By</th>
+              <th style="width: 15%;">Action</th>
+            </thead>
+            <tbody>
+              {% for list in assigment_list %}
+              <tr>
+                <!-- <td>{{list.topic.course.judul}}</td> -->
+                <td>{{list.topic.judul}}</td>
+                <td>{{list.judul}}</td>
+                <td>{{list.user.email}}</td>
+                <td>
+                  <a class='btn btn-success btn-sm' title='Detail' href="{% url 'assignment_detail' list.id %}">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+                    <a class='btn btn-primary btn-sm' title='Edit' href="{% url 'assignment_update' list.id %}">
+                      <i class="fa fa-edit"></i>
+                    </a>
+                    <a class="btn btn-danger btn-sm" title="Delete" href="{% url 'assignment_delete' list.id %}">
+                      <i class="fa fa-trash"></i>
+                    </a>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" align="center" style="color: red;">No data</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+          <a type="button" class="btn btn-danger" href="{% url 'topic_list' topic.course.slug %}">
+            <i class="fa fa-reply"></i> Back
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

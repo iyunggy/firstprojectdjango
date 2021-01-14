@@ -1,0 +1,25 @@
+{% extends "dashboard/base.html" %}
+{% block breadcrumb_item %}
+<li> <a href="{% url 'dashboard'  %}">List Information</a></li>
+<li>Detail Pengumuman</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <!-- page untuk admin -->
+      <div class="panel-heading">
+        <h4 class="panel-title">Updated News</h4><br>
+      </div>
+      <div class="panel-body">
+        <p>{{info.created_on | date:"l, d M Y"}}</p>
+        {{info.konten | safe}}
+      </div>
+      <div class="panel-body">
+        <a type="button" class="btn btn-danger" href="{% url 'dashboard' %}"><i class="fa fa-reply"></i> Back</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

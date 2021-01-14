@@ -1,0 +1,130 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>List Subscription</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" %}
+      
+      <div class="panel-body">
+        <div class="row">
+          <p>Dowload Per Course</p>
+          <div class="col-md-4">
+            <select class="form-control" id="mySelect" onchange="myFunction()">
+              <option value="" selected="selected">-Select Course Code-</option>
+              {% for list in course_code %}
+              <option value="{{list}}">{{list}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-2">
+            <a href="{% url 'export_subscription_xls' %}" class="btn btn-primary">Download all Subscription</a>
+          </div>
+        </div>
+        <hr>
+        <form action="{% url 'export_subscription_xls_by_range_date' %}" method="GET">
+          <p>Download Per Range Date</p>
+          <div class="col-sm-4">
+            <input type="date" name="tanggal_mulai" class="form-control" />
+          </div>
+          <div class="col-sm-4">
+            <input type="date" name="tanggal_akhir" class="form-control" />
+          </div>
+          <div class="col-sm-4">
+            <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Download</button>
+          </div>
+        </form>
+      </div>
+      <hr>
+      <div class="panel-body">
+        <div class="col-md-6">
+          {% if user.status == "ADMIN" %}
+          <a href="{% url 'subscription_create' %}" class="btn btn-primary">Tambah Subcription</a>
+          &nbsp;
+          {% endif %}
+        </div>
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'subscription_list' %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <th>Created On</th>
+              <th>Kode Course</th>
+              <th>User</th>
+              <th>Phone Number</th>
+              <th style="width: 15%;">Action</th>
+            </thead>
+            <tbody>
+              {% for list in subscription_list %}
+              <tr>
+                <td>{{list.created_on}}</td>
+                <td>{{list.course.course_code}}</td>
+                <td>{{list.user}}</td>
+                <td>{{list.user.phone}}</td>
+                <td>
+                  <a class='btn btn-success btn-sm' title='Detail' href="{% url 'subscription_detail' list.id %}">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  <a class='btn btn-primary btn-sm' title='Edit' href="{% url 'subscription_update' list.id %}">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  <a class="btn btn-danger btn-sm" title="Delete" href="{% url 'subscription_delete' list.id %}">
+                      <i class="fa fa-trash"></i>
+                    </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" align="center" style="color: red;">No data</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script type="text/javascript">
+  function myFunction() {
+    var x = document.getElementById("mySelect").value;
+    // console.log(x)
+    var url = "{% url 'export_subscription_xls' %}";
+    var form = $('<form action="' + url + '" method="GET">' +
+      '{% csrf_token %}' +
+      '<input type="hidden" name="corse_code" value="' + x + '" />' +
+      '</form>');
+    $('body').append(form);
+    form.submit();
+  }
+</script>
+{% endblock scripts %}

@@ -1,0 +1,179 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+{% if user.status == "ADMIN" or user.status == "MANAGER" %}
+<div class="col-md-6">
+  <div class="panel panel-white">
+    <div class="panel-heading clearfix">
+      <h3 class="panel-title">Average Exam Score</h3>
+      <div class="panel-control">
+        <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="" class="panel-reload" data-original-title="Reload"><i class="icon-reload"></i></a>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div>
+        <canvas id="chart1" height="165"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-6">
+  <div class="panel panel-white">
+    <div class="panel-heading clearfix">
+      <h3 class="panel-title">Score distribution for an Exam</h3>
+      <div class="panel-control">
+        <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="" class="panel-reload" data-original-title="Reload"><i class="icon-reload"></i></a>
+      </div>
+    </div>
+    <div class="panel-body">
+      <p class="text-danger">{{sample_ujian}}</p>
+            <select class="form-control" id="mySelect" onchange="myFunction()" >
+              {% for list in all_exams %}
+                <option value="{{list.kode}}" >{{list.kode}}</option>
+              {% endfor %}
+          </select>
+    </div>
+    <div class="panel-body">
+      <div>
+        <canvas id="chart2" height="122.5"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <h3 class="text-center">ONLINE EXAM SYSTEM, UNIVERSITAS PRASETIYA MULYA</h3>
+        <hr><br>
+        <p>Silahkan perhatikan hal-hal berikut sebelum Anda memulai ujian.</p>
+        <div class="card">
+          <div class="card-body">
+        <ol>
+          <li>Pastikan Anda sudah memiliki kelengkapan ujian</li>
+          <li>Apabila sudah siap, klik menu <bold>
+
+        </ol>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endblock content %}
+
+{% block scripts%}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script type="text/javascript">
+  function myFunction() {
+    var x = document.getElementById("mySelect").value;
+    console.log(x)
+    var url = "{% url 'statistic' %}";
+    var form = $('<form action="' + url + '" method="GET">' +
+      '{% csrf_token %}' +
+      '<input type="hidden" name="select_ujian" value="' + x + '" />' +
+      '</form>');
+    $('body').append(form);
+    form.submit();
+  }
+</script>
+<script>
+  var graph1_kodeujian = {{graph1_kodeujian | safe }}
+  var graph1_average_score = {{graph1_average_score | safe}}
+  var range_0_20 = {{range_0_20 | safe }}
+  var range_20_40 = {{range_20_40 | safe }}
+  var range_40_60 = {{range_40_60 | safe }}
+  var range_60_80 = {{range_60_80 | safe }}
+  var range_80_100 = {{range_80_100 | safe }}
+
+  console.log
+  var data1 = {
+    labels: graph1_kodeujian,
+    datasets: [{
+      label: "",
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+      ],
+      borderWidth: 1,
+      data: graph1_average_score,
+    }]
+  };
+
+  var ctx1 = $("#chart1");
+  var myBarChart = new Chart(ctx1, {
+    type: 'bar',
+    data: data1,
+    options: {
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+
+  var data2 = {
+    labels: ["1-20", "21-40", "41-60", "61-80", "81-100"],
+    datasets: [{
+      label: "",
+      backgroundColor: [
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(50, 168, 129, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(123, 168, 50, 0.2)',
+        'rgba(168, 74, 50, 0.2)'
+      ],
+      borderColor: [
+        'rgba(153, 102, 255,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(50, 168, 129, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(123, 168, 50, 1)',
+        'rgba(168, 74, 50, 1)'
+      ],
+      borderWidth: 1,
+      data: [range_0_20, range_20_40, range_40_60, range_60_80, range_80_100],
+    }]
+  };
+
+  var ctx2 = $("#chart2");
+  var myBarChart = new Chart(ctx2, {
+    type: 'bar',
+    data: data2,
+    options: {
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+</script>
+{% endblock %}

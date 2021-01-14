@@ -1,0 +1,103 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>List Marketing Squad</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+      <div class="panel-body">
+        <div class="col-md-6">
+          <a href="{% url 'marketing_squard_create' %}" class="btn btn-primary">Tambah Marketing Squad Baru</a>
+        </div>
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search" value="{{searchvalue}}">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'marketing_squard_list' %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+          {% if user.status == "ADMIN" %}
+          <p><strong>Total Marketing Squad: {{marketingsquardcount}}</strong></p>
+          {% endif %}
+            <thead>
+              <th>Id Marketing Squad</th>
+              <th>User</th>
+              <th>Bank</th>
+              <th>No Rekening</th>
+              <th>Level</th>
+              <th style="width: 15%;">Action</th>
+            </thead>
+            <tbody>
+              {% for list in marketing_squard_list %}
+              <tr>
+                <td>{{list.id_marketing_squard}}</td>
+                <td>{{list.user}}</td>
+                <td>
+                  {% if list.nama_bank %}
+                  {{list.nama_bank}}
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+                <td>
+                  {% if list.no_rekening %}
+                  {{list.no_rekening}}
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+                <td>
+                  {% if list.level %}
+                  {{list.level}}
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+                <td>
+                  <a class='btn btn-success btn-sm' title='Detail' href="{% url 'marketing_squard_detail' list.id %}">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  <a class='btn btn-primary btn-sm' title='Edit' href="{% url 'marketing_squard_update' list.id %}">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  <a class="btn btn-danger btn-sm" title="Delete" href="{% url 'marketing_squard_delete' list.id %}">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" align="center" style="color: red;">No data</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,83 @@
+{% extends 'dashboard/base.html' %}
+
+{% block breadcrumb_item %}
+<li><a href="{% url 'course_list' %}">List Course</a></li>
+<li> <a href="{% url 'speaking_clinic_question_list' speakingclinicquestion.course.pk  %}">List Speaking Question</a></li>
+<li>Delete Speaking Question</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" or user.status == "MANAGER" %}
+      <!-- page untuk admin -->
+      <div class="panel-heading">
+        <h4 class="panel-title">Delete Confirmation</h4>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <td>Course</td>
+              <td>:</td>
+              <td>{{speakingclinicquestion.course.judul}}</td>
+            </tr>
+            <tr>
+              <td>Urutan Display</td>
+              <td>:</td>
+              <td>{{speakingclinicquestion.urutan_display}}</td>
+            </tr>
+            <tr>
+              <td>Instruction</td>
+              <td>:</td>
+              <td>{{speakingclinicquestion.instruction}}</td>
+            </tr>
+            <tr>
+              <td>Question</td>
+              <td>:</td>
+              <td>{{speakingclinicquestion.text_question|linebreaks}}</td>
+            </tr>
+            {% if speakingclinicquestion.image %}
+              <tr>
+                <td>Image</td>
+                <td>:</td>
+                <td><img src="{{speakingclinicquestion.image.url}}" alt="" height="30%"></td>
+              </tr>
+            {% endif %}
+            <tr>
+              <td>Language</td>
+              <td>:</td>
+              <td>{{speakingclinicquestion.language}}</td>
+            </tr>
+            <tr>
+              <td>Max Repeat Record</td>
+              <td>:</td>
+              <td>{{speakingclinicquestion.max_repeat}}</td>
+            </tr>
+            <tr>
+              <td>Max Duration Record</td>
+              <td>:</td>
+              <td>{{speakingclinicquestion.answer_duration}} second</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary"> Ok</button>
+          <a type="button" class="btn btn-danger" href="{% url 'speaking_clinic_question_list' speakingclinicquestion.course.pk %}">
+            <i class="fa fa-reply"></i> Back</a>
+        </form>
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

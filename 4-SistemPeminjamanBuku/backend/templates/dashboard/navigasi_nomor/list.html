@@ -1,0 +1,66 @@
+  
+  <div class="col-md-3">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <h4 class="m-t-md">Nomor</h4>
+        <!-- <strong>
+          <p class="text-center" id="timer"></p>
+        </strong> -->
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+          <div class="btn-group" role="group">
+            {% for list in soal  %}
+            <button type="submit" class="btn btn-default">{{list.nomor}}</button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<!-- <script>
+  // Set the date we're counting down to
+  // = new Date("Jan 7, 2020 14:27:00").getTime();
+  // var minutes = $('#menit').val()
+  // var seconds = $('#detik').val()
+  var minutes = '{{soalujian.durasi_minute}}' // durasi menit dari u
+  var seconds = '{{soalujian.durasi_second}}' // durasi second dari ujian
+  // $('#timer').hide()
+  console.log('minutes', minutes)
+  console.log('detik', seconds)
+  // $('#timer').show()
+  if (minutes == 0) {
+    minutes = 1
+  } else {
+    minutes = minutes * 60
+  }
+  if (seconds == 0) {
+    seconds = 1
+  }
+  var countDownDate = new Date(Date.parse(new Date()) + 1 * 1 * minutes * seconds * 1000);
+
+  // Update the count down every 1 second
+  var x = setInterval(function () {
+
+    // Get today's date and time
+    var now = new Date().getTime();
+
+    // Find the distance between now and the count down date
+    var distance = countDownDate - now;
+
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Output the result in an element with id="demo"
+    document.getElementById("timer").innerHTML = minutes + "m " + seconds + "s ";
+
+    // If the count down is over, write some text
+    if (distance < 0) {
+      clearInterval(x);
+      $('#pertanyaan').hide()
+      document.getElementById("timer").innerHTML = "EXPIRED. Klik NEXT untuk melanjutkan Soal";
+    }
+  }, 1000);
+</script> -->

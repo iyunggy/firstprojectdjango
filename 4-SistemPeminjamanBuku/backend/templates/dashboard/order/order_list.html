@@ -1,0 +1,136 @@
+{% extends "dashboard/base.html" %}
+
+{% block breadcrumb_item %}
+<li>List Order</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        <div class="col-md-6">
+        {% if user.status == "ADMIN" %}
+          <a href="{% url 'order_create' %}" class="btn btn-primary">Tambah Order Manual</a>
+        {% endif %}
+        </div>
+        <div class="col-md-4">
+          <form action="#" method="GET">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control input-search" placeholder="Search">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <a href="{% url 'order_list' %}" class="btn btn-danger btn-rounded">Reset Pencarian</a>
+        </div>
+      </div>
+      
+      {% if user.status == "ADMIN" %}
+        <div class="panel-body">
+          <div class="col-md-6">
+
+          </div>
+          <div class="col-md-6">
+            <form method="GET" class="form-inline">
+              <div class="form-group">
+                <select name="payment" class="form-control m-b-sm">
+                  <option value="">Pilih Payment Method</option>
+                    <option value="Manual" {% if payment == "Manual" %} selected {% endif %}>Manual</option>
+                    <option value="Midtrans" {% if payment == "Midtrans" %} selected {% endif %}>Midtrans</option>
+                </select>
+                <button type="submit" class="btn btn-warning">Cari</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+        
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <thead class="text-primary">
+                {% if user.status == "ADMIN" %}
+                <th rowspan="2">Created On</th>
+                {% endif %}
+                <!-- <th rowspan="2">Update Date</th> -->
+                <th rowspan="2" >Order Id</th>
+                <th colspan="5" style="text-align: center;">Pembelian</th>
+                <th rowspan="2">status</th>
+                <th rowspan="2">Amount</th>
+                <th rowspan="2">Action</th>
+                <tr>
+                  <th>Kode Course</th>
+                  <th>Referal Voucher</th>
+                  <th>Referal Marketing</th>
+                  {% if user.status == 'ADMIN' %}
+                    <th>User</th>
+                    <th>Phone Number</th>
+                  {% else %}
+                  <th colspan="2">Judul Course</th>
+                  {% endif %}
+                </tr>
+              </thead>
+            <tbody>
+              {% for list in order_list %}
+              <tr>
+                {% if user.status == "ADMIN" %}
+                <td>{{list.created_on}} <strong>(payment: {{list.payment_method}})</strong></td>
+                {% endif %}
+                <!-- <td>{{list.update_date}}</td> -->
+                <td>{{list.order_id}}</td>
+                <td>{{list.course.course_code}}</td>
+                <td>
+                  {% if list.referal_voucher %}
+                    {{list.referal_voucher}}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if list.referal_marketing_squard %}
+                    {{list.referal_marketing_squard}}
+                  {% endif %}
+                </td>
+                {% if user.status == 'ADMIN' %}
+                  <td>{{list.user.fullname}} / {{list.user.email}}</td>
+                  <td>{{list.user.phone}}</td>
+                {% else %}
+                  <td colspan="2">{{list.course.judul}}</td>
+                {% endif %}
+                <td>{{list.status}}</td>
+                <td>{{list.harga_course}}</td>
+                <td>
+                  <a class='btn btn-success btn-sm' title='Detail' href="{% url 'order_detail' list.id %}">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  {% if user.status == "ADMIN" and list.status == "LUNAS" %}
+                  <a class='btn btn-primary btn-sm' title='Update' href="{% url 'order_update' list.id %}">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  {% endif %}
+                  {% if list.status == "BELUM LUNAS" %}
+                  <a class='btn btn-danger btn-sm' title='Delete' href="{% url 'order_delete' list.id %}">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="6" align="center" style="color: red;">Anda tidak memiliki order</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          {% include 'snippets/_pagination.html' %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,45 @@
+{% extends "frontend_full_learnup/base.html" %}
+
+{% block content %}
+<div style="padding-left: 50px; padding-right: 50px;">
+  <br>
+  {% if user.is_authenticated %}
+  <div class="row mt-3">
+    <div class="col-md-4 order-md-2 mb-4">
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Subscription</span>
+        <span class="badge badge-secondary badge-pill">1</span>
+      </h4>
+      <ul class="list-group mb-3">
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">Kode Course</h6>
+          </div>
+          <span class="text-muted">{{courses.course_code}}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">Judul Course</h6>
+          </div>
+          <span class="text-muted">{{courses.judul}}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-md-8 order-md-1">
+      <!-- <h4 class="mb-3">Billing address</h4> -->
+      <div class="alert alert-info text-center">
+        <strong>Selamat! Anda telah terdaftar di course ini</strong>
+        <strong>Silahkan akses dengan klik  <a href="{% url 'course_student_detail' courses.id %}">LINK BERIKUT</a> </strong>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="alert alert-danger text-center">
+    <strong>Anda harus melakukan <a href="{% url 'login_user' %}?next=/course/subscription_done/{{courses.id}}">LOGIN</a> atau <a href="{% url 'signup_new' %}?next=/course/subscription_done/{{courses.id}}">SIGN-UP</a> terlebih dahulu.</strong>
+  </div>
+  {% endif %}
+  <br>
+</div>
+{% endblock content %}
+

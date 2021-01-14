@@ -1,0 +1,52 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block breadcrumb_item %}
+<li> <a href="{% url 'custom_user_list' %}">List Pendaftar</a></li>
+<li>Import Pendaftar</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      {% if user.status == "ADMIN" %}
+      <!-- page untuk admin -->
+      <div class="panel-body">
+        {% if messages %}
+        {% for message in messages  %}
+        <div class="alert alert-danger text-center">
+          <strong>{{message|safe}}</strong>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="panel-body">
+          <div class="col-md-6 col-md-offset-3">
+            <div class="alert alert-info text-center">
+              <i class="fa fa-download"></i> <strong><a
+                  href="{% static 'template_csv/template_csv_pendaftaran.csv' %}">Template CSV File
+                  Pendaftaran</a></strong>
+            </div>
+          </div>
+        </div>
+        <form action="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="Upload file">Upload File <strong>(MAKE SURE THE EMAIL ADDRESS NOT DUPLICATED / EMAIL ADDRESS IS
+                UNIQUE FIELD)</strong> </label>
+            <input type="file" name="file" accept=".csv"  required>
+          </div>
+          <p><strong>*Only accepts CSV files</strong></p>
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        {% endif %}
+      </div>
+      {% else %}
+      <!-- page untuk mahasiswa -->
+      <div class="panel-body">
+        <h4>Halaman ini hanya dapat diakses oleh admin sistem.</h4>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

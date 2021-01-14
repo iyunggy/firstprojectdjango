@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- <h1>Hello Woorld</h1>
+  <hr> -->
+  <p style="background-color: red;">{{konten | safe}}</p>
+  {{uploaded_file_url}}
+  <img src="cid:{{uploaded_file_url}}" alt="">
+  <img src="http://127.0.0.1:8000//media/{{uploaded_file_url}}" alt="">
+  {{isi_file}}
+  {{isi_file.url}}
+  <img src="{{isi_file.url}}" alt="">
+  <img src="{{isi_file}}" alt="">
+</body>
+</html>

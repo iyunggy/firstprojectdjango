@@ -1,0 +1,395 @@
+{% extends "dashboard/base.html" %}
+
+{% block style %}
+<style>
+  .spinner {
+  display: inline-block;
+  opacity: 0;
+  max-width: 0;
+  -webkit-transition: opacity 0.25s, max-width 0.45s;
+  -moz-transition: opacity 0.25s, max-width 0.45s;
+  -o-transition: opacity 0.25s, max-width 0.45s;
+  transition: opacity 0.25s, max-width 0.45s;
+  /* Duration fixed since we animate additional hidden width */
+}
+
+.has-spinner.active {
+  cursor: progress;
+}
+
+.has-spinner.active .spinner {
+  opacity: 1;
+  max-width: 50px;
+  /* More than it will ever come, notice that this affects on animation duration */
+}
+</style>
+{% endblock style %}
+  
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-body">
+        
+          <!-- <div class="alert alert-success">
+            <h3>{{question_speaking.text_question|linebreaks}}</h3>
+          </div> -->
+          <div style="border:1px solid black; padding: 20px;">
+          
+            {% if question_speaking.image %}
+              <div class="text-center">
+                <img src="{{question_speaking.image.url}}" alt="" width="100%">
+              </div>
+            {% endif %}
+              
+            <h3><b>Question {{question_speaking.urutan_display}}:</b></h3>
+            <p>{{question_speaking.instruction}} <br> {{question_speaking.text_question|linebreaks}}</p>
+            
+            {% if question_speaking.question_audio %}
+            <audio controls  controlsList="nodownload">
+              <source src="{{question_speaking.question_audio.url}}">
+            Your browser does not support the audio element.
+            </audio>
+            {% endif %}
+              
+          </div>
+          <br>
+          <strong>
+            <p class="text-center" id="countdown"></p>
+            <input type="hidden" id="updateTimer" value="{{question_speaking.answer_duration}}">
+          </strong>
+
+          <div class="alert alert-warning text-center" role="alert">
+            Pastikan voice record yang Anda buat harus jernih tanpa ada suara lain, karena jika tidak jernih maka audio Anda tidak terbaca oleh Sistem.
+          </div>
+
+        <h4 id="formats">Klik tombol Record untuk memulai merekam dan perhitungan mundur akan dimulai</h4>
+          <div id="controls">
+            <button class="btn btn-success btn-lg" id="recordButton" onclick="changeRecordClass()"><i class="fa fa-microphone"></i> Record</button> &nbsp;
+            <!-- <button class="btn btn-warning btn-lg" id="pauseButton" disabled>Pause</button> &nbsp; -->
+            <button class="btn btn-github btn-lg" id="stopButton" disabled onclick="changeStopClass()"><i class="fa fa-stop"></i> Stop</button>
+          </div>
+          <br>
+          <p><strong>Recordings:</strong></p>
+          <ul id="recordingsList"></ul>
+          <h4 id="description"></h4>
+          <br>
+          <a class="btn btn-danger" href="{% url 'speaking_test_detail' question_speaking.pk %}"><i class="fa fa-reply"></i> Back</a>
+          <button class="btn btn-primary  has-spinner" onclick="assignmentVoiceSubmit()" id="submitButton"> <span class="spinner"><i class="fa fa-refresh fa-spin"></i></span> Submit</button>
+          <h3 id="respError"></h3>
+          <a id="btnRefresh"><b></b></a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<!--///////////////// code rubah class name ketika button active /////////////////  -->
+<script type="text/javascript"> 
+  function changeRecordClass() { 
+      document.getElementById('recordButton').className = "btn btn-github btn-lg"; 
+      document.getElementById('stopButton').className = "btn btn-danger btn-lg"; 
+  } 
+
+  function changeStopClass() { 
+      document.getElementById('stopButton').className = "btn btn-github btn-lg"; 
+      document.getElementById('recordButton').className = "btn btn-success btn-lg"; 
+  } 
+</script> 
+<!-- ////////////////////////////////////////////////////////////////////////////// -->
+
+<script>
+  $(function(){
+    $('a, button').click(function() {
+        $(this).toggleClass('active');
+    });
+});
+</script>
+
+<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+
+<!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
+<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+
+<script>
+//////////////////// digunakan untuk count down /////////////////////
+    var seconds = null;
+    // var seconds = {{question_speaking.answer_duration|safe}}
+    console.log('speaking', seconds)
+    var myTimer;
+
+    function clock() {
+      console.log('a', seconds)
+      myTimer = setInterval(myClock, 1000);
+      var c = seconds;
+      console.log('clock c', c)
+
+      function myClock() {
+        document.getElementById("countdown").innerHTML = --c + " seconds remaining";
+
+        console.log('--c', c)
+        document.getElementById("updateTimer").value = c
+
+        if (c == 0) {
+          clearInterval(myTimer);
+          stopRecording();
+
+        }
+      }
+    }
+////////////////////////// batas untuk recording //////////////////////////////
+
+  var pk_question = {{pk_question|safe}}
+  console.log('x', pk_question)
+  
+
+  // formData in variabel global
+  let fd1=new FormData();
+  console.log('fd1', fd1)
+
+  //webkitURL is deprecated but nevertheless
+  URL = window.URL || window.webkitURL;
+
+  var gumStream; 						//stream from getUserMedia()
+  var rec; 							//Recorder.js object
+  var input; 							//MediaStreamAudioSourceNode we'll be recording
+
+  // shim for AudioContext when it's not avb. 
+  var AudioContext = window.AudioContext || window.webkitAudioContext;
+  var audioContext //audio context to help us record
+
+  var recordButton = document.getElementById("recordButton");
+  var stopButton = document.getElementById("stopButton");
+  // var pauseButton = document.getElementById("pauseButton"); // sengaja di disable
+  // get Submit button
+  var submitButton = document.getElementById("submitButton");
+
+  // tentuin tombol submit disabled atau ga
+  var list_audio =$('#recordingsList li')
+  if(list_audio.length == 0){
+    submitButton.disabled = true;
+  } else {
+    submitButton.disabled = false;
+  }
+
+  //add events to those 2 buttons
+  // recordButton.addEventListener("click", startRecording);
+  // document.getElementById('recordButton').className = "btn btn-success btn-lg"; 
+  recordButton.addEventListener("click", checkRecording);
+  stopButton.addEventListener("click", stopRecording);
+  // pauseButton.addEventListener("click", pauseRecording); //sengaja di disable
+
+  function checkRecording() {
+    // var check_list =$('#recordingsList li').length
+    var check_list =$('#recordingsList li')
+    console.log('check_list', check_list)
+    if(check_list.length == 0){
+      startRecording();
+    } else {
+      var konfirmasi = confirm('Data recording sudah ada jika Anda ingin record ulang akan replace data Record sebelumnya dan recording akan langsung dimulai. Apakah Anda yakin ? ');
+      if (konfirmasi) {
+        
+        if (check_list.length >= 1) {
+            var list = document.getElementById("recordingsList");
+            list.removeChild(list.childNodes[0]);
+            
+            //update the description 
+            document.getElementById("description").innerHTML = ""
+          }
+        
+          // jika tekan OK confirmation
+          checkRecording();
+          console.log('masuk sini')
+          document.getElementById('recordButton').className = "btn btn-github btn-lg"; 
+          document.getElementById('stopButton').className = "btn btn-danger btn-lg"; 
+        } else{
+          // jika tekan BATAL confirmation
+          console.log('sini aja')
+          document.getElementById('recordButton').className = "btn btn-success btn-lg"; 
+          document.getElementById('stopButton').className = "btn btn-github btn-lg"; 
+        }
+        
+    }
+  }
+
+  function startRecording() {
+    console.log("recordButton clicked");
+
+/////////////// mulai timer /////////////////////
+    seconds = {{question_speaking.answer_duration|safe}} + 1; // timer harus ditambah 1 karena saat hitungan mundur di langsung (timer - 1)
+    clock()
+/////////////////////////////////////////////////
+
+    /*
+      Simple constraints object, for more advanced audio features see
+      https://addpipe.com/blog/audio-constraints-getusermedia/
+    */
+      
+      var constraints = { audio: true, video:false }
+
+    /*
+        Disable the record button until we get a success or fail from getUserMedia() 
+    */
+
+    recordButton.disabled = true;
+    stopButton.disabled = false;
+    // pauseButton.disabled = false; //sengaja di disable
+    submitButton.disabled = true;
+
+    /*
+        We're using the standard promise based getUserMedia() 
+        https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+    */
+
+    navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+      console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
+
+      /*
+        create an audio context after getUserMedia is called
+        sampleRate might change after getUserMedia is called, like it does on macOS when recording through AirPods
+        the sampleRate defaults to the one set in your OS for your playback device
+      */
+      audioContext = new AudioContext();
+
+      //update the format 
+      document.getElementById("formats").innerHTML="Format: 1 channel pcm @ "+audioContext.sampleRate/1000+"kHz"
+
+      /*  assign to gumStream for later use  */
+      gumStream = stream;
+      
+      /* use the stream */
+      input = audioContext.createMediaStreamSource(stream);
+
+      /* 
+        Create the Recorder object and configure to record mono sound (1 channel)
+        Recording 2 channels  will double the file size
+      */
+      rec = new Recorder(input,{numChannels:1})
+
+      //start the recording process
+      rec.record()
+
+      console.log("Recording started");
+
+    }).catch(function(err) {
+        //enable the record button if getUserMedia() fails
+        recordButton.disabled = false;
+        stopButton.disabled = true;
+        // pauseButton.disabled = true; //sengaja di disable
+        submitButton.disabled = true;
+    });
+  }
+
+  // function pauseRecording(){
+  //   console.log("pauseButton clicked rec.recording=",rec.recording );
+  //   if (rec.recording){
+  //     //pause
+  //     rec.stop();
+  //     pauseButton.innerHTML="Resume";
+  //     ///// pause timer ////////
+  //     /////////////////////////
+  //     clearInterval(myTimer);
+  //   }else{
+  //     /////////// resume timer //////
+  //     seconds = parseInt( $('#updateTimer').val() )
+  //     clock()
+  //     // paused_timer = $('#updateTimer').val()
+  //     console.log('paused_timer', seconds, typeof(seconds))
+  //     ///////////////////
+      
+  //     //resume
+  //     rec.record()
+  //     pauseButton.innerHTML="Pause";
+      
+  //   }
+  //   submitButton.disabled = true;
+  // }
+
+  function stopRecording() {
+    console.log("stopButton clicked");
+
+    //update the description 
+    document.getElementById("description").innerHTML = "Voice record sudah terbuat untuk mencoba dengarkan hasil record Anda dapat di-play pada preview audio diatas dan jika sudah ok silahkan klik SUBMIT untuk melihat score Anda atau klik Record lagi untuk mengulanginya jika hasil preview audio Anda kurang sesuai."
+
+///////////// hentikan timer ////////////
+    clearInterval(myTimer)
+////////////////////////////////////////
+
+    //disable the stop button, enable the record too allow for new recordings
+    stopButton.disabled = true;
+    recordButton.disabled = false;
+    // pauseButton.disabled = true; //sengaja di disable
+    submitButton.disabled = false;
+
+    //reset button just in case the recording is stopped while paused
+    // pauseButton.innerHTML="Pause"; //sengaja di disable
+    
+    //tell the recorder to stop the recording
+    rec.stop();
+
+    //stop microphone access
+    gumStream.getAudioTracks()[0].stop();
+
+    //create the wav blob and pass it on to createDownloadLink
+    rec.exportWAV(createDownloadLink);
+  }
+
+  async function createDownloadLink(blob) {
+    
+    var url = URL.createObjectURL(blob);
+    console.log('url', url)
+    var au = document.createElement('audio');
+    var li = document.createElement('li');
+    document.getElementById("recordingsList").style.listStyleType = "none";
+    var link = document.createElement('a');
+
+    //name of .wav file to use during upload and download (without extendion)
+    var filename = new Date().toISOString();
+
+    //add controls to the <audio> element
+    au.controls = true;
+    au.src = url;
+    console.log('au', au)
+    console.log('blob', blob)
+
+    //save to disk link
+    link.href = url;
+    link.download = filename+".wav"; //download forces the browser to donwload the file using the  filename
+    link.innerHTML = "Save to disk";
+    console.log('link', link)
+    // let fd1=new FormData();
+    fd1.append("audio_data",blob, filename+'.wav');
+
+    // //add the new audio element to li
+    li.appendChild(au);
+    console.log('ax', au)
+
+    // //add the li element to the ol
+    recordingsList.appendChild(li);
+  }
+
+  async function assignmentVoiceSubmit() {
+    await fetch(`{% url 'handle-upload-speaking-clinic' pk_question %}`, {
+        method: 'post',
+        body: fd1,
+      })
+      .then(resp => resp.json())
+      .then(resp => {
+        console.log("[RESP]", resp);
+        if (resp.msg != "Google Speech Recognition could not understand audio"){
+          window.location.href = `{% url 'speaking_test_detail' pk_question %}`;
+        } else {
+          // tampilkan keterangan eror
+          document.getElementById('respError').innerHTML = "Sistem kami tidak dapat membaca audio record Anda, Silahkan klik tombol Refresh dibawah ini untuk merefresh halaman ini."
+          // // tampilkan button buat refresh
+          document.getElementById('btnRefresh').className = "btn btn-primary" 
+          document.getElementById('btnRefresh').innerText = "Refresh"
+          document.getElementById('btnRefresh').href = "{% url 'speaking_test_create' pk_question %}"
+        }
+    });
+  }
+
+</script>
+{% endblock scripts %}

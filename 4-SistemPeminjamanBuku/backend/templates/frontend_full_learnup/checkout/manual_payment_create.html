@@ -1,0 +1,87 @@
+{% extends "frontend_full_learnup/base.html" %}
+{% load humanize %}
+
+{% block content %}
+<!-- ============================ Page Title Start================================== -->
+<section class="page-title">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-12">
+        
+        <div class="breadcrumbs-wrap">
+          <h1 class="breadcrumb-title">Manual Payment Form</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Manual Payment</li>
+            </ol>
+          </nav>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================ Page Title End ================================== -->			
+
+
+<!-- ============================ Add To cart ================================== -->
+{% if user.is_authenticated %}
+  <section class="pt-0">
+    <div class="container">
+      
+      <div class="row">
+        <div class="col-lg-8 col-md-12">
+        
+          <div class="cart_totals checkout light_form mb-4">
+            <h4>Confirmation Payment Form</h4>
+            <br>
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              {{form.media}}
+              {{form.as_p}}
+              <button type="submit" class="btn btn-primary btn-lg btn-block"> Submit</button>
+            </form>
+          </div>
+          
+        </div>
+        
+        <div class="col-lg-4 col-md-12">
+
+          <!-- Total Cart -->
+          <div class="cart_totals checkout">
+            <h4>Order Summary</h4>
+            <div class="cart-wrap">
+              <ul class="cart_list">
+                <li>Course code <strong>{{order.course.course_code}}</strong></li>
+              </ul>
+              <div class="flex_cart" style="margin-bottom: 5px;">
+                <div class="flex_cart_1">
+                  Amount pay
+                </div>
+                <div class="flex_cart_2">
+                  <strong id="hargacourse_old">Rp {{order.harga_course|intcomma}}</strong><br>
+                </div>
+              </div>
+
+            </div>
+
+            <hr>
+
+          </div>
+
+        </div>
+        
+      </div>
+      
+    </div>
+  </section>
+{% else %}
+  <div class="container">
+    <div class="alert alert-danger text-center" style="margin-bottom: 200px;">
+      <strong>You have to <a href="{% url 'login_user' %}?next=/course/checkout/{{courses.id}}">LOGIN</a> or <a href="{% url 'signup_new' %}?next=/course/checkout/{{courses.id}}">SIGN-UP</a> first.</strong>
+    </div>
+  </div>
+{% endif %}
+<!-- ============================ Add To cart End ================================== -->
+{% endblock content %}

@@ -1,0 +1,44 @@
+{% extends 'dashboard/base.html' %}
+
+{% block breadcrumb_item %}
+<li><a href="{% url 'subscription_list' %}">List Subscription</a></li>
+<li>Delete Assignment</li>
+{% endblock breadcrumb_item %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-white">
+      <div class="panel-heading">
+        <h4 class="panel-title">Delete Confirmation</h4>
+      </div>
+      <div class="panel-body">
+        <table class="table table-striped">
+          <tr>
+            <td>Kode Course</td>
+            <td>:</td>
+            <td>{{subscription.course.course_code}}</td>
+          </tr>
+          <tr>
+            <td>User</td>
+            <td>:</td>
+            <td>{{subscription.user}}</td>
+          </tr>
+          <tr>
+            <td>Telepon User</td>
+            <td>:</td>
+            <td>{{subscription.user.phone}}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="panel-body">
+        <form method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary"> Ok</button>
+          <a class="btn btn-danger" href="{{request.META.HTTP_REFERER}}"><i class="fa fa-reply"></i> Back</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

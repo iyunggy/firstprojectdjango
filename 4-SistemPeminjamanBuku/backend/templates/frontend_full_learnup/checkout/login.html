@@ -1,0 +1,52 @@
+{% extends 'registration/base_regist.html' %}
+{% load static %}
+
+{% block content %}
+<body class="page-login">
+	<main class="page-content" style="background-image: url({% static 'logo/loginimg.jpg' %}); background-size: cover;">
+		<div class="page-inner">
+			<div id="main-wrapper">
+				<div class="row">
+					<div class="col-md-3 center">
+						<div class="panel panel-white" id="js-alerts">
+							<div class="panel-body">
+								<div class="login-box">
+									<div class="text-center">
+										<img src="{% static 'logo/igenlogo.png' %}" alt="" height="80">
+									</div>
+									<p class="logo-name text-lg text-center m-t-xs">Courses Portal</p>
+									<p class="text-center m-t-xs">Indonesia Global Education Network (IGEN)</p>
+									<br><br><br>
+									<form class="login100-form validate-form" method="POST" action="">
+										{% csrf_token %}
+										{% if form.errors %}
+										<div class="alert alert-danger">Your Email Address and Password didn't match.Please try again!</div>
+										{% endif %}
+
+										<div class="form-group">
+											<input type="email" class="form-control" name="{{form.username.name}}"
+												placeholder="{{form.username.label}}" required>
+										</div>
+										<div class="form-group">
+											<input type="password" name="password" class="password form-control" name="{{form.password.name}}"
+												placeholder="{{form.password.label}}" required>
+										</div>
+										<button type="submit" class="btn button-login btn-block">Login</button>
+										<a href="{% url 'signup_new' %}" class="display-block text-center m-t-md text-sm">SIGN UP (Pengguna Baru)</a>
+										<a href="{% url 'reset_password' %}" class="display-block text-center m-t-md text-sm">Forgot
+											Password?</a>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!-- Row -->
+			</div><!-- Main Wrapper -->
+		</div><!-- Page Inner -->
+	</main><!-- Page Content -->
+
+
+	{% include 'snippets/script.html' %}
+</body>
+
+{% endblock content %}
